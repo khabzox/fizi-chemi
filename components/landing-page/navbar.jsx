@@ -34,18 +34,19 @@ const Navbar = () => {
     <header className="flex justify-between items-center py-5 max-w-[95rem] mx-auto px-5 md:px-10">
       <div className="flex items-center space-x-6">
         <Link href="/">
-        <Image src="/logo.svg" 
-        width={190}
-        height={100}
-        alt={"FiziChemi Logo"}
-        className="hover:opacity-85 active:scale-[0.99]"
-        />
+          <Image
+            src="/logo.svg"
+            width={190}
+            height={100}
+            alt={"FiziChemi Logo"}
+            className="hover:opacity-85 active:scale-[0.99]"
+          />
         </Link>
         <div className="hidden xl:block">
           <ul className={`${UbuntuFont.className} flex gap-4 font-semibold`}>
             <li className="relative">
               <button className="flex items-center" onClick={toggleDropdown}>
-              Tutoriels
+                Tutoriels
                 <ChevronDown size={20} />
               </button>
               {isOpen && (

@@ -1,11 +1,10 @@
 import { UbuntuFont } from "@/config/fonts";
 import Image from "next/image";
 import React from "react";
-import { HeroBtn } from "../shared/customs-btns";
 
 const AboutUs = () => {
   return (
-    <div className="flex items-center justify-center py-10 px-0 md:px-20">
+    <section className="flex items-center justify-center py-10 px-0 md:px-20" id="À-Propos">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="md:w-1/2">
           <h1
@@ -27,7 +26,7 @@ const AboutUs = () => {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -6,7 +6,7 @@ import Levels from "./levels";
 
 const Tutorials = () => {
   return (
-    <div className="bg-secondary my-44">
+    <section className="bg-secondary my-44" id="Tutoriels">
       <div className="flex flex-col max-w-[95rem] mx-auto px-5 md:px-24 py-20">
         <div>
           <h1
@@ -27,7 +27,7 @@ const Tutorials = () => {
         </div>
         <Levels />
       </div>
-    </div>
+    </section>
   );
 };
 

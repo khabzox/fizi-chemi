@@ -65,7 +65,7 @@ export default function ContactForm() {
     setError(null);
 
     try {
-      await fetch("https://formbold.com/s/6MbaW", {
+      await fetch("https://formbold.com/s/3Orre", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -92,19 +92,19 @@ export default function ContactForm() {
       <form onSubmit={handleSubmit} className="w-full space-y-3" ref={formRef}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           <div>
-            <Label className="text-lg text-accent font-medium">Name:</Label>
+            <Label className="text-lg text-primary font-medium">Nom:</Label>
             <Input
               name="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
-              className="bg-accent h-14 text-lg text-primary focus-visible:ring-accent"
+              className="bg-secondary h-14 text-lg text-white focus-visible:ring-accent"
               required
             />
           </div>
           <div>
-            <Label className="text-lg text-accent font-medium">
-              Phone Number:
+            <Label className="text-lg text-primary font-medium">
+              Numéro de téléphone:
             </Label>
             <PhoneInput
               // placeholder="Enter phone number"
@@ -118,74 +118,71 @@ export default function ContactForm() {
           </div>
         </div>
         <div>
-          <Label className="text-lg text-accent font-medium">
-            Email Address:
+          <Label className="text-lg text-primary font-medium">
+            Adresse Email:
           </Label>
           <Input
             name="email"
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className="bg-accent h-14 text-lg text-primary focus-visible:ring-accent"
+            className="bg-secondary h-14 text-lg text-white focus-visible:ring-accent"
             required
           />
         </div>
         <div>
-          <Label className="text-lg text-accent font-medium">Message:</Label>
+          <Label className="text-lg text-primary font-medium">Message:</Label>
           <Textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            className="bg-accent text-lg text-primary focus-visible:ring-accent"
+            className="bg-secondary text-lg text-white focus-visible:ring-accent"
             rows={10}
             required
           />
         </div>
 
         <div className="flex items-center text-lg gap-2">
-          <Checkbox className="bg-accent w-5 h-5" required />
-          <p className="text-accent font-medium">
-            By checking this box, you agree to our
+          <Checkbox className="bg-secondary w-5 h-5" required />
+          <p className="text-primary font-medium">
+            En cochant cette case, vous acceptez notre
             <span>
-              <Link href="/pr">Privacy Policy</Link>
+              <Link href="/pr">Politique de confidentialité</Link>
             </span>
-            and consent to the use of cookies in your browser.
+            {"et consentez à l'utilisation de cookies dans votre navigateur."}
           </p>
         </div>
 
         <Button
-          className="w-full text-primary h-14 text-lg"
+          className="w-full text-white h-14 text-lg"
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Sending..." : "Send Message"}
+          {isSubmitting ? "Envoi..." : "Envoyer un message"}
         </Button>
       </form>
 
       <div className="w-1/2">
-        <h2>Contact Details:</h2>
+        <h2>Coordonnées:</h2>
         <div className="pl-2 pt-2 text-lg font-medium">
           <h3 className="text-md sm:text-lg">
             Email:
             <br className="block md:hidden" />
-            <Link href="mailto:info@aceyourscore.com">
-              {" "}
-              info@aceyourscore.com
-            </Link>
+            <Link href="mailto:info@fizichemi.com"> info@fizichemi.com</Link>
           </h3>
           <h3 className="w-full min-w-40">
-            Phone Number:
+            Numéro de téléphone:
             <br className="block md:hidden" />
-            <Link href="tel:+212616139962"> {"+212 616 139962"}</Link>
+            <Link href="tel:+212658751813"> {"+212 658-751813"}</Link>
           </h3>
-          <div className="sm:flex sm:items-center sm:justify-between pt-4">
+          {/* <div className="sm:flex sm:items-center sm:justify-between pt-4">
             <ul className="mt-8 flex justify-start gap-6 sm:mt-0 sm:justify-end">
               <li>
                 <a
                   href="https://www.facebook.com/people/Fahd-Ays/pfbid035D2jFXJWYu69WueEzb9NYQDbta89H3JWzLsp2hDVyqwdBfSwogRptXCZwneTjyPil/"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-accent transition hover:opacity-75"
+                  className="text-primary transition hover:opacity-75"
                 >
                   <span className="sr-only">Facebook</span>
                   <Facebook />
@@ -197,7 +194,7 @@ export default function ContactForm() {
                   href="https://www.instagram.com/fahd.aceyourscore"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-accent transition hover:opacity-75"
+                  className="text-primary transition hover:opacity-75"
                 >
                   <span className="sr-only">Instagram</span>
                   <Instagram />
@@ -209,7 +206,7 @@ export default function ContactForm() {
                   href="https://www.youtube.com/@fahd-je7gb"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-accent transition hover:opacity-75"
+                  className="text-primary transition hover:opacity-75"
                 >
                   <span className="sr-only">YouTube</span>
                   <Youtube />
@@ -221,14 +218,14 @@ export default function ContactForm() {
                   href="https://www.threads.net/@fahd.aceyourscore"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-accent transition hover:opacity-75"
+                  className="text-primary transition hover:opacity-75"
                 >
                   <span className="sr-only">Threads</span>
                   <AtSign />
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -243,8 +240,8 @@ export default function ContactForm() {
               variant="success"
               className="mb-2 bg-green-500 border-2 border-accent"
             >
-              <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>Thank you for your message!</AlertDescription>
+              <AlertTitle>Succès!</AlertTitle>
+              <AlertDescription>Merci pour votre message!</AlertDescription>
             </Alert>
           )}
           {error && (
