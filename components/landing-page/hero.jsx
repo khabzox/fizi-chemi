@@ -26,7 +26,7 @@ export default function Hero() {
           </p>
           <HeroBtn
             text={"Commencez"}
-            href="/dashboard"
+            href="/tutorials"
             // className=""
           />
         </div>
