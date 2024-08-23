@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 
-
 import { useUser } from "@clerk/nextjs";
 
 import TutorialsLayout from "@/app/tutorials/_components/tutorials-layout.jsx";
@@ -210,49 +209,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         }));
     }, [levelId, selectedSemester, selectedSubjects, selectedSection]);
 
-    // async function uploadFile(file) {
-    //     const storageRef = ref(
-    //         storage,
-    //         `${levelId}/${getFormattedSemesterName(selectedSemester)}/subjects/${selectedSubjects}/sections/${getFormattedSectionsName(selectedSection)}/${file.name}`
-    //     );
-
-    //     setUploadingFile(true);
-
-    //     try {
-    //         const uploadTask = uploadBytesResumable(storageRef, file);
-
-    //         uploadTask.on(
-    //             "state_changed",
-    //             (snapshot) => {
-    //                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //                 setProgressViewerOfFile(progress);
-    //             },
-    //             (error) => {
-    //                 console.error("Error uploading file:", error);
-    //                 setAlertFileIsUploaded("Error uploading file!");
-    //             },
-    //             async () => {
-    //                 setProgressViewerOfFile(100);
-    //                 setAlertFileIsUploaded("File uploaded successfully!");
-
-    //                 try {
-    //                     const downloadURL = await getDownloadURL(storageRef);
-    //                     setFormDataLesson((prev) => ({
-    //                         ...prev,
-    //                         downloadLink: downloadURL,
-    //                     }));
-    //                 } catch (error) {
-    //                     console.error('Error getting download URL:', error);
-    //                 }
-    //             }
-    //         );
-    //     } catch (err) {
-    //         console.error('Upload failed:', err);
-    //     } finally {
-    //         setUploadingFile(false)
-    //     }
-    // }
-
     async function uploadFile(file) {
         const storageRef = ref(
             storage,
@@ -261,8 +217,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
 
         try {
             const uploadTask = uploadBytesResumable(storageRef, file);
-
-            setUploadingFile(true);
             console.log("Uploading file:", file.name);
 
             uploadTask.on(
@@ -270,6 +224,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                 (snapshot) => {
                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                     setProgressViewerOfFile(progress);
+                    setUploadingFile(true)
                 },
                 (error) => {
                     console.error("Error uploading file:", error);
@@ -278,6 +233,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                 async () => {
                     setProgressViewerOfFile(100);
                     setAlertFileIsUploaded("File uploaded successfully!");
+                    setUploadingFile(false)
 
                     try {
                         const downloadURL = await getDownloadURL(storageRef);
@@ -292,9 +248,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             );
         } catch (err) {
             console.error('Upload failed:', err);
-        } finally {
-            console.log("Upload completed for file:", file.name);
-            setUploadingFile(false);
         }
     }
 
@@ -444,6 +397,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                         type="file"
                                         onChange={handleChange}
                                         className="mb-4 bg-white text-primary"
+                                        disabled={uploadingFile || uploading}
                                         required
                                     />
 
