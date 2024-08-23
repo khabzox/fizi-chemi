@@ -1,7 +1,7 @@
-export const handleEdit = (fileIndex) => {
-  console.log("Editing file", fileIndex);
+export const handleEdit = (id) => {
+  console.log("Editing file", id);
 };
 
-export const handleDelete = (fileIndex) => {
-  console.log("Deleting file", fileIndex);
+export const handleDelete = (id) => {
+  console.log("Deleting file", id);
 };

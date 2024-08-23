@@ -4,12 +4,12 @@ import { Folder, SquareArrowOutUpRight } from "lucide-react";
 const Levels = () => {
   // Define an array of objects, each with a name and path
   const levelArr = [
-    { name: "1 AC", path: "/tutorials/1-AC" },
-    { name: "2 AC", path: "/tutorials/2-AC" },
-    { name: "3 AC", path: "/tutorials/3-AC" },
-    { name: "TCSF", path: "/tutorials/TCFS" },
-    { name: "1 BAC", path: "/tutorials/1-BAC" },
-    { name: "2 BAC", path: "/tutorials/2-BAC" },
+    { name: "1 AC", path: "/tutorials/1ac" },
+    { name: "2 AC", path: "/tutorials/2ac" },
+    { name: "3 AC", path: "/tutorials/3ac" },
+    { name: "TCSF", path: "/tutorials/tcsf" },
+    { name: "1 BAC", path: "/tutorials/1bac" },
+    { name: "2 BAC", path: "/tutorials/2bac" },
   ];
 
   return (

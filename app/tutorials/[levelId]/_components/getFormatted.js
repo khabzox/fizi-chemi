@@ -23,19 +23,19 @@ export const getFormattedSubjectsName = (subject) => {
 export const getFormattedSectionsName = (section) => {
   switch (section) {
     case "Cours":
-      return "Cours";
+      return "cours";
     case "Cours PowerPoint":
-      return "Cours PowerPoint";
+      return "course_powerpoint";
     case "Exercices corrigés":
-      return "Exercices corrigés";
+      return "corrected_exercises";
     case "Devoirs surveillés":
-      return "Devoirs surveillés";
+      return "supervised_homework";
     case "Fiches pédagogiques":
-      return "Fiches pédagogiques";
+      return "educational_sheets";
     case "Évaluations diagnostiques":
-      return "Évaluations diagnostiques";
+      return "diagnostic_assessments";
     case "Vidéos":
-      return "Vidéos";
+      return "videos";
     default:
       return "N/A";
   }
