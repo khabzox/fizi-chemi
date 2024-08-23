@@ -1,8 +1,8 @@
 export const getFormattedSemesterName = (semester) => {
   switch (semester) {
-    case "Semestre 1":
+    case "Semester 1":
       return "semester_1";
-    case "Semestre 2":
+    case "Semester 2":
       return "semester_2";
     default:
       return "N/A";
@@ -11,10 +11,10 @@ export const getFormattedSemesterName = (semester) => {
 
 export const getFormattedSubjectsName = (subject) => {
   switch (subject) {
-    case "Physique":
-      return "physics";
-    case "Chimie":
-      return "chemistry";
+    case "physics":
+      return "Physique";
+    case "chemistry":
+      return "Chimie";
     default:
       return "N/A";
   }

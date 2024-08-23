@@ -27,7 +27,7 @@ export default function Loading() {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-white opacity-90 z-50">
             <div ref={logoRef}>
-                <Image src="/logo.svg" alt="Loading" width={150} height={150} />
+                <Image src="/logo-cercle.svg" alt="Loading" width={30} height={30} className="animate-spin" />
             </div>
         </div>
     );

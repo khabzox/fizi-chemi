@@ -9,7 +9,7 @@ import TutorialsLayout from "@/app/tutorials/_components/tutorials-layout.jsx";
 
 import { db, storage } from "@/config/firebase";
 import { doc, onSnapshot, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
-import { ref as storageRef, deleteObject } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 
 import { Grip, Loader } from "lucide-react";
 
@@ -35,16 +35,50 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
+import { Alert } from "@/components/ui/alert";
+
+
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const LevelsPage = ({ tutorialData, levelId }) => {
     const { user } = useUser();
     const isAdmin = user?.publicMetadata.role === "admin";
 
+    const router = useRouter();
+
     const [semesters, setSemesters] = useState(tutorialData[levelId]);
-    const [editingFile, setEditingFile] = useState(null); // Track which file is being edited
-    const [newTitle, setNewTitle] = useState(''); // Track the new title for the file
-    const [loadingFileSave, setLoadingFileSave] = useState(false); // Loading state for saving changes
-    const [loadingDelete, setLoadingDelete] = useState(null); // Track loading state for deleting a file
+
+
+    const [selectedSemester, setSelectedSemester] = useState("");
+    const [selectedSubjects, setSelectedSubjects] = useState("");
+    const [selectedSection, setSelectedSection] = useState("");
+
+
+    const [formDataLesson, setFormDataLesson] = useState({
+        title: "",
+        downloadLink: "",
+        fileLocation: []
+    });
+    console.log(formDataLesson)
+    console.log(formDataLesson.fileLocation)
+
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadingFile, setUploadingFile] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const [alertFileIsUploaded, setAlertFileIsUploaded] = useState("");
+    const [progressViewerOfFile, setProgressViewerOfFile] = useState(0);
+
+    // btns of edit and delete
+    const [editingFile, setEditingFile] = useState(null);
+    const [newTitle, setNewTitle] = useState('');
+    const [loadingFileSave, setLoadingFileSave] = useState(false);
+    const [loadingDelete, setLoadingDelete] = useState(null);
 
     const handleEdit = (id, currentTitle) => {
         setEditingFile(id);
@@ -140,11 +174,202 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     };
 
 
+    // Memoized semester and subject names
+    const uniqueSemesters = useMemo(() => Object.values(semesters).map(sem => sem.title), [semesters]);
+    console.log(uniqueSemesters)
 
+    const uniqueSubjects = useMemo(() => {
+        const formattedSemesterName = getFormattedSemesterName(selectedSemester);
+        const semesterData = semesters[formattedSemesterName];
+        return semesterData?.subjects ? Object.keys(semesterData.subjects) : [];
+    }, [selectedSemester, semesters]);
+    console.log(selectedSubjects)
+
+    const uniqueSectionTitles = useMemo(() => {
+        if (selectedSemester && selectedSubjects) {
+            const formattedSemesterName = getFormattedSemesterName(selectedSemester);
+            const subjectData = semesters[formattedSemesterName]?.subjects[selectedSubjects];
+            return subjectData ? Object.values(subjectData.sections).map(sec => sec.title) : [];
+        }
+        return [];
+    }, [selectedSemester, selectedSubjects, semesters]);
+
+    // Update file location reference
+    useEffect(() => {
+        const semester = getFormattedSemesterName(selectedSemester);
+        const subject = selectedSubjects;
+        const section = getFormattedSectionsName(selectedSection);
+
+        setFormDataLesson((prev) => ({
+            ...prev,
+            fileLocation: [
+                levelId,
+                [semester, { "title": selectedSemester }],
+                [subject, { "title": getFormattedSubjectsName(selectedSubjects) }],
+                [section, { "title": selectedSection }]],
+        }));
+    }, [levelId, selectedSemester, selectedSubjects, selectedSection]);
+
+    // async function uploadFile(file) {
+    //     const storageRef = ref(
+    //         storage,
+    //         `${levelId}/${getFormattedSemesterName(selectedSemester)}/subjects/${selectedSubjects}/sections/${getFormattedSectionsName(selectedSection)}/${file.name}`
+    //     );
+
+    //     setUploadingFile(true);
+
+    //     try {
+    //         const uploadTask = uploadBytesResumable(storageRef, file);
+
+    //         uploadTask.on(
+    //             "state_changed",
+    //             (snapshot) => {
+    //                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //                 setProgressViewerOfFile(progress);
+    //             },
+    //             (error) => {
+    //                 console.error("Error uploading file:", error);
+    //                 setAlertFileIsUploaded("Error uploading file!");
+    //             },
+    //             async () => {
+    //                 setProgressViewerOfFile(100);
+    //                 setAlertFileIsUploaded("File uploaded successfully!");
+
+    //                 try {
+    //                     const downloadURL = await getDownloadURL(storageRef);
+    //                     setFormDataLesson((prev) => ({
+    //                         ...prev,
+    //                         downloadLink: downloadURL,
+    //                     }));
+    //                 } catch (error) {
+    //                     console.error('Error getting download URL:', error);
+    //                 }
+    //             }
+    //         );
+    //     } catch (err) {
+    //         console.error('Upload failed:', err);
+    //     } finally {
+    //         setUploadingFile(false)
+    //     }
+    // }
+
+    async function uploadFile(file) {
+        const storageRef = ref(
+            storage,
+            `${levelId}/${getFormattedSemesterName(selectedSemester)}/subjects/${selectedSubjects}/sections/${getFormattedSectionsName(selectedSection)}/${file.name}`
+        );
+
+        try {
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            setUploadingFile(true);
+            console.log("Uploading file:", file.name);
+
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgressViewerOfFile(progress);
+                },
+                (error) => {
+                    console.error("Error uploading file:", error);
+                    setAlertFileIsUploaded("Error uploading file!");
+                },
+                async () => {
+                    setProgressViewerOfFile(100);
+                    setAlertFileIsUploaded("File uploaded successfully!");
+
+                    try {
+                        const downloadURL = await getDownloadURL(storageRef);
+                        setFormDataLesson((prev) => ({
+                            ...prev,
+                            downloadLink: downloadURL,
+                        }));
+                    } catch (error) {
+                        console.error('Error getting download URL:', error);
+                    }
+                }
+            );
+        } catch (err) {
+            console.error('Upload failed:', err);
+        } finally {
+            console.log("Upload completed for file:", file.name);
+            setUploadingFile(false);
+        }
+    }
+
+    function handleChange(e) {
+        const { name, value, files } = e.target;
+        if (files && files[0]) {
+            setSelectedFile(files[0]);
+            uploadFile(files[0]);
+        } else {
+            setFormDataLesson((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
+    }
+
+    async function sendFormDataLesson(e) {
+        e.preventDefault();
+
+        setUploading(true)
+
+        try {
+            const res = await fetch("/api/tutorial", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formDataLesson),
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            setSuccessMessage("Lesson created successfully!");
+            resetForm();
+            router.refresh()
+        } catch (error) {
+            console.error("Fetch error:", error);
+            setErrorMessage("Failed to create lesson.");
+        } finally {
+            setUploading(false)
+        }
+    }
+
+    const resetForm = () => {
+        setUploading(false);
+        setUploadingFile(false);
+        setSelectedFile(null);
+        setAlertFileIsUploaded("");
+        setErrorMessage("");
+        setSuccessMessage("");
+        setSelectedSemester("");
+        setSelectedSubjects("");
+        setSelectedSection("");
+
+        // Reset form data
+        setFormDataLesson({
+            title: "",
+            downloadLink: "",
+            fileLocation: []
+        });
+    };
+
+
+    console.log(formDataLesson)
     return (
         <TutorialsLayout title="1ère Année Collège">
             <div className="w-full shadow-lg rounded-lg border-2 border-primary">
                 <div className="p-4 bg-gray-100 border-b border-primary">
+                    <div className="pb-4">
+                        {errorMessage && <Alert variant="error" className="mb-2">{errorMessage}</Alert>}
+                        {successMessage && <Alert variant="success" className="mb-2">{successMessage}</Alert>}
+                        {alertFileIsUploaded && <Alert variant="info">{alertFileIsUploaded}</Alert>}
+                    </div>
                     <div className="mb-4">
                         <Label className="block mb-2">Select Semester:</Label>
                         <Select onValueChange={setSelectedSemester} value={selectedSemester}>
@@ -169,7 +394,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                     <SelectContent>
                                         {uniqueSubjects.map((subjectsTitle, index) => (
                                             <SelectItem key={index} value={subjectsTitle}>
-                                                {subjectsTitle}
+                                                {getFormattedSubjectsName(subjectsTitle)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -197,27 +422,61 @@ const LevelsPage = ({ tutorialData, levelId }) => {
 
                     {selectedSection && (
                         <>
-                            <div className="mb-4">
-                                <Label className="block mb-2">File Title:</Label>
-                                <Input
-                                    type="text"
-                                    value={fileTitle}
-                                    onChange={handleTitleChange}
-                                    className="p-2 border-2 border-primary bg-white rounded w-full placeholder:text-primary/60"
-                                    placeholder="Enter file title..."
-                                />
-                            </div>
+                            <form onSubmit={sendFormDataLesson}>
+                                <div className="mb-4">
+                                    <Label className="block mb-2">File Title:</Label>
+                                    <Input
+                                        id="title"
+                                        name="title"
+                                        value={formDataLesson.title}
+                                        type="text"
+                                        className="p-2 border-2 border-primary bg-white rounded w-full placeholder:text-primary/60"
+                                        placeholder="Enter file title..."
+                                        onChange={handleChange}
+                                        required />
+                                </div>
 
-                            <div>
-                                <Input
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    className="mb-4 bg-white text-primary"
-                                />
-                                <Button onClick={handleUpload} disabled={uploading} className="bg-primary text-white p-2 rounded">
-                                    {uploading ? "Uploading..." : "Upload"}
-                                </Button>
-                            </div>
+                                <div>
+                                    <Label htmlFor="file" className="block mb-2">Upload File</Label>
+                                    <Input
+                                        id="downloadLink"
+                                        name="downloadLink"
+                                        type="file"
+                                        onChange={handleChange}
+                                        className="mb-4 bg-white text-primary"
+                                        required
+                                    />
+
+                                    {/* Display progress bar if the progress is greater than 0 */}
+                                    {progressViewerOfFile > 0 && (
+                                        <div className="mb-4 flex items-center gap-2">
+                                            <Progress
+                                                value={progressViewerOfFile}
+                                                className="bg-transparent border-2 border-primary"
+                                            />
+                                            {progressViewerOfFile}%
+                                        </div>
+                                    )}
+
+                                    <Button
+                                        type="submit"
+                                        disabled={uploadingFile || uploading}
+                                        className={`p-2 w-full rounded-lg ${uploadingFile || uploading ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-primary text-white'
+                                            }`}
+                                    >
+                                        {uploadingFile ? (
+                                            <span className="flex items-center gap-2">
+                                                <Loader className="animate-spin h-5 w-5 text-white" /> Uploading file...
+                                            </span>
+                                        ) : uploading ? (
+                                            "Uploading..."
+                                        ) : (
+                                            "Upload"
+                                        )}
+                                    </Button>
+
+                                </div>
+                            </form>
                         </>
                     )}
                 </div>
@@ -251,7 +510,8 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                 {`Il n'y a pas encore des ${section.title}`} 😅
                                                                             </p>
                                                                         ) : (
-                                                                            Object.entries(section.files).map(([fileKey, { title, id, fileName }], fileIndex) => (
+                                                                            Object.entries(section.files).map(([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
+
                                                                                 <div
                                                                                     key={id}
                                                                                     className="p-4 border-b border-primary flex items-center justify-between"
@@ -280,7 +540,11 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                         </>
                                                                                     ) : (
                                                                                         <>
-                                                                                            <span>{title}</span>
+                                                                                            <span>
+                                                                                                <Link href={downloadLink} download={downloadLink} target="_blank">
+                                                                                                    {title}
+                                                                                                </Link>
+                                                                                            </span>
                                                                                             <div className="flex space-x-4 items-center">
                                                                                                 <Button onClick={() => handleEdit(id, title)} disabled={loadingFileSave ? true : false} >Edit</Button>
                                                                                                 <Button
