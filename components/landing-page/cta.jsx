@@ -12,7 +12,7 @@ export default function CTA() {
           interactifs, adaptés à tous les niveaux, offrent des explications
           claires et des exemples pratiques.
         </p>
-        <HeroBtn text={"Commencer Maintenant"} href={"/dashboard"} />
+        <HeroBtn text={"Commencer Maintenant"} href={"/tutorials"} />
       </div>
     </section>
   );
