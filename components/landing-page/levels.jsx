@@ -10,8 +10,8 @@ const Levels = () => {
         return "/tutorials/2ac";
         case "3 AC":
           return "/tutorials/3ac";
-        case "TCSF":
-          return "/tutorials/tcsf";
+        case "TC":
+          return "/tutorials/tc";
           case "1 BAC":
             return "/tutorials/1bac";
           case "2 BAC":
@@ -23,7 +23,7 @@ const Levels = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-white pb-4">
-      {["1 AC", "2 AC", "3 AC", "TCSF", "1 BAC", "2 BAC"].map(
+      {["1 AC", "2 AC", "3 AC", "TC", "1 BAC", "2 BAC"].map(
         (title, index) => (
           <Link href={getLink(title)} key={index}>
             <div className="flex justify-between items-center bg-primary p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">

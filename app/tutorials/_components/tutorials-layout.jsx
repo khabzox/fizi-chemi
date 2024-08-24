@@ -7,10 +7,10 @@ import Levels from "./levels";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const TutorialsLayout = ({ children, title }) => {
+const TutorialsLayout = ({ children, title, pathName, path }) => {
   return (
     <>
-    {/* <div className="px-5 lg:px-20 mt-10">
+      {/* <div className="px-5 lg:px-20 mt-10">
       <Button>Go Back</Button>
     </div> */}
       <div className="bg-white shadow-md rounded-lg p-6 px-5 lg:px-20 mt-2 flex flex-col-reverse lg:flex-row">
@@ -21,16 +21,22 @@ const TutorialsLayout = ({ children, title }) => {
               <h1 className="text-2xl sm:text-4xl font-bold items-center">
                 {title}
               </h1>
-              <p className="flex space-x-2">
+              <p className="flex space-x-2 items-center">
                 <span>
                   <Link href="/">
-                    <House className="mr-2" />
+                    <House className="mr-2" size={19} />
                   </Link>
                 </span>
                 /
                 <span className="font-semibold">
-                  <Link href="/Tutorials" className="underline">
+                  <Link href="/tutorials" className="underline mr-2">
                     Tutoriels
+                  </Link>
+                </span>
+                /
+                <span className="font-semibold">
+                  <Link href={`/tutorials/${path}`} className="underline">
+                    {pathName}
                   </Link>
                 </span>
               </p>
@@ -56,10 +62,10 @@ const TutorialsLayout = ({ children, title }) => {
           </div>
           <div className="mt-4 flex space-x-2 py-10 w-full">
             <Input
-              className="bg-transparent border-4 border-primary active:border-primary active:focus:ring-black py-6 placeholder:text-xl placeholder:text-primary/50 text-primary"
-              placeholder="Recherche..."
+              className="bg-transparent border-4 border-primary active:border-primary active:focus:ring-black py-6 text-xl placeholder:text-xl placeholder:text-primary/50 text-primary"
+              placeholder="Rechercher..."
             />
-            <Button className="h-15 px-8 text-xl font-bold">Search</Button>
+            <Button className="h-15 px-8 text-xl font-bold">Rechercher</Button>
           </div>
           {children}
         </div>

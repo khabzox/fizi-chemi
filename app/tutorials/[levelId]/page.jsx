@@ -5,7 +5,7 @@ export default function Page({ params }) {
   const levelId = params.levelId;
 
   console.log(levelId);
-  if (levelId !== "1ac" && levelId !== "2ac" && levelId !== "3ac" && levelId !== "tcsf" && levelId !== "1bac" && levelId !== "2bac") {
+  if (levelId !== "1ac" && levelId !== "2ac" && levelId !== "3ac" && levelId !== "tc" && levelId !== "1bac" && levelId !== "2bac") {
     return redirect("/tutorials");
   }
 

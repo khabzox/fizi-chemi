@@ -287,8 +287,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         setUploadingFile(false);
         setSelectedFile(null);
         setAlertFileIsUploaded("");
-        setErrorMessage("");
-        setSuccessMessage("");
         setSelectedSemester("");
         setSelectedSubjects("");
         setSelectedSection("");
@@ -301,11 +299,23 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         });
     };
 
+    function choseLevelTitle(levelId) {
+        switch (levelId) {
+            case "1ac": return "1ère Année Collège";
+            case "2ac": return "2ère Année Collège";
+            case "3ac": return "3ère Année Collège";
+            case "tc": return "Tronc Commun";
+            case "1bac": return "1ère Bac";
+            case "2bac": return "2ème Bac";
+            default: 'No Title';
+        }
+    }
+
     return (
-        <TutorialsLayout title="1ère Année Collège">
-            <div className="w-full shadow-lg rounded-lg border-2 border-primary">
+        <TutorialsLayout title={choseLevelTitle(levelId)} pathName={levelId} path={levelId}>
+            <div className="w-full shadow-lg border-2 border-primary rounded-lg">
                 {isAdmin && (
-                    <div className="p-4 bg-gray-100 border-b border-primary">
+                    <div className="p-4 bg-gray-100 border-b border-primary rounded-t-lg">
                         <div className="pb-4">
                             {errorMessage && <Alert variant="error" className="mb-2">{errorMessage}</Alert>}
                             {successMessage && <Alert variant="success" className="mb-2">{successMessage}</Alert>}
@@ -444,7 +454,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                     <div key={semesterKey}>
                         <Accordion type="single" collapsible>
                             <AccordionItem value={`semester-${sectionIndex}`}>
-                                <AccordionTrigger className="flex justify-between items-center bg-black text-white p-4">
+                                <AccordionTrigger className="flex justify-between items-center bg-primary text-white p-4">
                                     <span>{semester.title}</span>
                                 </AccordionTrigger>
                                 <AccordionContent>

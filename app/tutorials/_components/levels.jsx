@@ -7,7 +7,7 @@ const Levels = () => {
     { name: "1 AC", path: "/tutorials/1ac" },
     { name: "2 AC", path: "/tutorials/2ac" },
     { name: "3 AC", path: "/tutorials/3ac" },
-    { name: "TCSF", path: "/tutorials/tcsf" },
+    { name: "TC", path: "/tutorials/tc" },
     { name: "1 BAC", path: "/tutorials/1bac" },
     { name: "2 BAC", path: "/tutorials/2bac" },
   ];

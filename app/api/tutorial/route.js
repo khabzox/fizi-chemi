@@ -89,7 +89,7 @@ export async function GET() {
           `Semester document does not exist at path: ${semesterRef.path}`
         );
         return {
-          title: `Semester ${semesterNumber}`,
+          title: `Semestre ${semesterNumber}`,
           subjects: createEmptySubjectStructure(),
         };
       }
@@ -109,7 +109,7 @@ export async function GET() {
       );
 
       return {
-        title: semesterData.title || `Semester ${semesterNumber}`,
+        title: semesterData.title || `Semestre ${semesterNumber}`,
         subjects,
       };
     },
@@ -136,7 +136,7 @@ export async function GET() {
 
   // Fetch data for all semesters
   async function fetchAllData() {
-    const collectionsNames = ["1ac", "2ac", "3ac", "tcs", "1bac", "2bac"];
+    const collectionsNames = ["1ac", "2ac", "3ac", "tc", "1bac", "2bac"];
     const semesters = {};
 
     await Promise.all(
