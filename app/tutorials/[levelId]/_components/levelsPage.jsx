@@ -7,8 +7,8 @@ import { useUser } from "@clerk/nextjs";
 import TutorialsLayout from "@/app/tutorials/_components/tutorials-layout.jsx";
 
 import { db, storage } from "@/config/firebase";
-import { doc, onSnapshot, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { Grip, Loader } from "lucide-react";
 
@@ -60,9 +60,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         downloadLink: "",
         fileLocation: []
     });
-    console.log(formDataLesson)
-    console.log(formDataLesson.fileLocation)
-
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadingFile, setUploadingFile] = useState(false);
@@ -128,10 +125,8 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     };
 
     const handleDelete = async ({ levelId, semester, subject, section, id }) => {
-        console.log({ levelId, semester, subject, section, id });
-
         // Set loading to true immediately after the delete action is initiated
-        setLoadingDelete(id); // Set the loading state to the ID of the file being deleted
+        setLoadingDelete(id);
 
         try {
             // Firestore: Reference to the section document
@@ -148,8 +143,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                 await updateDoc(sectionRef, {
                     files: updatedFiles
                 });
-
-                console.log("File reference removed from Firestore");
 
                 // Update the UI only after a successful response from Firestore
                 setSemesters((prevSemesters) => {
@@ -168,21 +161,18 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             console.error("Error deleting file: ", error);
         } finally {
             // Set loading to false after the delete action is complete
-            setLoadingDelete(null); // Reset the loading state
+            setLoadingDelete(false);
         }
     };
 
-
     // Memoized semester and subject names
     const uniqueSemesters = useMemo(() => Object.values(semesters).map(sem => sem.title), [semesters]);
-    console.log(uniqueSemesters)
 
     const uniqueSubjects = useMemo(() => {
         const formattedSemesterName = getFormattedSemesterName(selectedSemester);
         const semesterData = semesters[formattedSemesterName];
         return semesterData?.subjects ? Object.keys(semesterData.subjects) : [];
     }, [selectedSemester, semesters]);
-    console.log(selectedSubjects)
 
     const uniqueSectionTitles = useMemo(() => {
         if (selectedSemester && selectedSubjects) {
@@ -217,7 +207,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
 
         try {
             const uploadTask = uploadBytesResumable(storageRef, file);
-            console.log("Uploading file:", file.name);
 
             uploadTask.on(
                 "state_changed",
@@ -312,129 +301,144 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         });
     };
 
-
-    console.log(formDataLesson)
     return (
         <TutorialsLayout title="1ère Année Collège">
             <div className="w-full shadow-lg rounded-lg border-2 border-primary">
-                <div className="p-4 bg-gray-100 border-b border-primary">
-                    <div className="pb-4">
-                        {errorMessage && <Alert variant="error" className="mb-2">{errorMessage}</Alert>}
-                        {successMessage && <Alert variant="success" className="mb-2">{successMessage}</Alert>}
-                        {alertFileIsUploaded && <Alert variant="info">{alertFileIsUploaded}</Alert>}
-                    </div>
-                    <div className="mb-4">
-                        <Label className="block mb-2">Select Semester:</Label>
-                        <Select onValueChange={setSelectedSemester} value={selectedSemester}>
-                            <SelectTrigger className="border-2 border-primary">
-                                <SelectValue placeholder="-- Select a Semester --" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {uniqueSemesters.map((semesterTitle, index) => (
-                                    <SelectItem key={index} value={semesterTitle}>
-                                        {semesterTitle}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {selectedSemester && (
+                {isAdmin && (
+                    <div className="p-4 bg-gray-100 border-b border-primary">
+                        <div className="pb-4">
+                            {errorMessage && <Alert variant="error" className="mb-2">{errorMessage}</Alert>}
+                            {successMessage && <Alert variant="success" className="mb-2">{successMessage}</Alert>}
+                            {alertFileIsUploaded && <Alert variant="info">{alertFileIsUploaded}</Alert>}
+                        </div>
+                        <div className="mb-4">
+                            <Label className="block mb-2">Select Semester:</Label>
+                            <Select onValueChange={setSelectedSemester} value={selectedSemester}>
+                                <SelectTrigger className="border-2 border-primary">
+                                    <SelectValue placeholder="-- Select a Semester --" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {uniqueSemesters.map((semesterTitle, index) => (
+                                        <SelectItem key={index} value={semesterTitle}>
+                                            {semesterTitle}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {selectedSemester && (
+                                <>
+                                    <Label className="block mb-2 mt-4">Select subjects:</Label>
+                                    <Select onValueChange={setSelectedSubjects} value={selectedSubjects}>
+                                        <SelectTrigger className="border-2 border-primary">
+                                            <SelectValue placeholder="-- Select a Section --" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {uniqueSubjects.map((subjectsTitle, index) => (
+                                                <SelectItem key={index} value={subjectsTitle}>
+                                                    {getFormattedSubjectsName(subjectsTitle)}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </>
+                            )}
+                            {selectedSubjects && (
+                                <>
+                                    <Label className="block mb-2 mt-4">Select Section:</Label>
+                                    <Select onValueChange={setSelectedSection} value={selectedSection}>
+                                        <SelectTrigger className="border-2 border-primary">
+                                            <SelectValue placeholder="-- Select a Section --" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {uniqueSectionTitles.map((sectionTitle, index) => (
+                                                <SelectItem key={index} value={sectionTitle}>
+                                                    {sectionTitle}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </>
+                            )}
+                        </div>
+
+                        {selectedSection && (
                             <>
-                                <Label className="block mb-2 mt-4">Select subjects:</Label>
-                                <Select onValueChange={setSelectedSubjects} value={selectedSubjects}>
-                                    <SelectTrigger className="border-2 border-primary">
-                                        <SelectValue placeholder="-- Select a Section --" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {uniqueSubjects.map((subjectsTitle, index) => (
-                                            <SelectItem key={index} value={subjectsTitle}>
-                                                {getFormattedSubjectsName(subjectsTitle)}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </>
-                        )}
-                        {selectedSubjects && (
-                            <>
-                                <Label className="block mb-2 mt-4">Select Section:</Label>
-                                <Select onValueChange={setSelectedSection} value={selectedSection}>
-                                    <SelectTrigger className="border-2 border-primary">
-                                        <SelectValue placeholder="-- Select a Section --" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {uniqueSectionTitles.map((sectionTitle, index) => (
-                                            <SelectItem key={index} value={sectionTitle}>
-                                                {sectionTitle}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </>
-                        )}
-                    </div>
+                                <form onSubmit={sendFormDataLesson}>
+                                    <div className="mb-4">
+                                        <Label className="block mb-2">File Title:</Label>
+                                        <Input
+                                            id="title"
+                                            name="title"
+                                            value={formDataLesson.title}
+                                            type="text"
+                                            className="p-2 border-2 border-primary bg-white rounded w-full placeholder:text-primary/60"
+                                            placeholder="Enter file title..."
+                                            onChange={handleChange}
+                                            required />
+                                    </div>
 
-                    {selectedSection && (
-                        <>
-                            <form onSubmit={sendFormDataLesson}>
-                                <div className="mb-4">
-                                    <Label className="block mb-2">File Title:</Label>
-                                    <Input
-                                        id="title"
-                                        name="title"
-                                        value={formDataLesson.title}
-                                        type="text"
-                                        className="p-2 border-2 border-primary bg-white rounded w-full placeholder:text-primary/60"
-                                        placeholder="Enter file title..."
-                                        onChange={handleChange}
-                                        required />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="file" className="block mb-2">Upload File</Label>
-                                    <Input
-                                        id="downloadLink"
-                                        name="downloadLink"
-                                        type="file"
-                                        onChange={handleChange}
-                                        className="mb-4 bg-white text-primary"
-                                        disabled={uploadingFile || uploading}
-                                        required
-                                    />
-
-                                    {/* Display progress bar if the progress is greater than 0 */}
-                                    {progressViewerOfFile > 0 && (
-                                        <div className="mb-4 flex items-center gap-2">
-                                            <Progress
-                                                value={progressViewerOfFile}
-                                                className="bg-transparent border-2 border-primary"
-                                            />
-                                            {progressViewerOfFile}%
-                                        </div>
-                                    )}
-
-                                    <Button
-                                        type="submit"
-                                        disabled={uploadingFile || uploading}
-                                        className={`p-2 w-full rounded-lg ${uploadingFile || uploading ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-primary text-white'
-                                            }`}
-                                    >
-                                        {uploadingFile ? (
-                                            <span className="flex items-center gap-2">
-                                                <Loader className="animate-spin h-5 w-5 text-white" /> Uploading file...
-                                            </span>
-                                        ) : uploading ? (
-                                            "Uploading..."
+                                    <div>
+                                        {selectedSection === "Vidéos" ? (
+                                            <>
+                                                <Label htmlFor="file" className="block mb-2">Link Url:</Label>
+                                                <Input
+                                                    id="downloadLink"
+                                                    name="downloadLink"
+                                                    value={formDataLesson.downloadLink}
+                                                    type="url"
+                                                    className="p-2 border-2 border-primary bg-white mb-4 rounded w-full placeholder:text-primary/60"
+                                                    placeholder="Enter file title..."
+                                                    onChange={handleChange}
+                                                    required />
+                                            </>
                                         ) : (
-                                            "Upload"
+                                            <>
+                                                <Label htmlFor="file" className="block mb-2">Upload File</Label>
+                                                <Input
+                                                    id="downloadLink"
+                                                    name="downloadLink"
+                                                    type="file"
+                                                    onChange={handleChange}
+                                                    className="mb-4 bg-white text-primary"
+                                                    disabled={uploadingFile || uploading}
+                                                    required
+                                                />
+
+                                                {progressViewerOfFile > 0 && (
+                                                    <div className="mb-4 flex items-center gap-2">
+                                                        <Progress
+                                                            value={progressViewerOfFile}
+                                                            className="bg-transparent border-2 border-primary"
+                                                        />
+                                                        {progressViewerOfFile}%
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
-                                    </Button>
 
-                                </div>
-                            </form>
-                        </>
-                    )}
-                </div>
+                                        <Button
+                                            type="submit"
+                                            disabled={uploadingFile || uploading}
+                                            className={`p-2 w-full rounded-lg ${uploadingFile || uploading ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-primary text-white'
+                                                }`}
+                                        >
+                                            {uploadingFile ? (
+                                                <span className="flex items-center gap-2">
+                                                    <Loader className="animate-spin h-5 w-5 text-white" /> Uploading file...
+                                                </span>
+                                            ) : uploading ? (
+                                                "Uploading..."
+                                            ) : (
+                                                "Upload"
+                                            )}
+                                        </Button>
 
+                                    </div>
+                                </form>
+                            </>
+                        )}
+                    </div>
+                )}
 
                 {Object.entries(semesters).map(([semesterKey, semester], sectionIndex) => (
                     <div key={semesterKey}>
@@ -465,13 +469,10 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                             </p>
                                                                         ) : (
                                                                             Object.entries(section.files).map(([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
-
-                                                                                <div
-                                                                                    key={id}
-                                                                                    className="p-4 border-b border-primary flex items-center justify-between"
-                                                                                >
+                                                                                <div key={id} className="px-4 border-b border-primary flex items-center justify-between">
                                                                                     {editingFile === id ? (
-                                                                                        <>
+                                                                                        // The container here should also have flex and justify-between
+                                                                                        <div className="py-1 flex items-center justify-between w-full">
                                                                                             <Input
                                                                                                 value={newTitle}
                                                                                                 onChange={(e) => setNewTitle(e.target.value)}
@@ -488,31 +489,44 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                     "Done"
                                                                                                 )}
                                                                                             </Button>
-                                                                                            <Button onClick={handleCancel} disabled={loadingFileSave ? true : false} className="relative">
+                                                                                            <Button onClick={handleCancel} disabled={loadingFileSave} className="relative">
                                                                                                 Cancel
                                                                                             </Button>
-                                                                                        </>
+                                                                                        </div>
                                                                                     ) : (
                                                                                         <>
-                                                                                            <span>
-                                                                                                <Link href={downloadLink} download={downloadLink} target="_blank">
-                                                                                                    {title}
-                                                                                                </Link>
-                                                                                            </span>
-                                                                                            <div className="flex space-x-4 items-center">
-                                                                                                <Button onClick={() => handleEdit(id, title)} disabled={loadingFileSave ? true : false} >Edit</Button>
-                                                                                                <Button
-                                                                                                    onClick={() => handleDelete({ levelId, semester: semesterKey, subject: subjectKey, section: sectionKey, id, fileName })}
-                                                                                                    disabled={loadingDelete === id || loadingFileSave ? true : false}
-                                                                                                    className="relative"
-                                                                                                >
-                                                                                                    {loadingDelete === id ? (
-                                                                                                        <Loader className="animate-spin h-5 w-5 text-white" />
-                                                                                                    ) : (
-                                                                                                        "Delete"
-                                                                                                    )}
-                                                                                                </Button>
-                                                                                            </div>
+                                                                                            <Link
+                                                                                                href={downloadLink}
+                                                                                                download={selectedSection === "Vidéos" ? downloadLink : undefined}
+                                                                                                target="_blank"
+                                                                                                className="flex-1"
+                                                                                            >
+                                                                                                <div className="flex items-center py-2 justify-between cursor-pointer">
+                                                                                                    <span>{title}</span>
+                                                                                                </div>
+                                                                                            </Link>
+
+                                                                                            {isAdmin && (
+                                                                                                <div className="flex items-center space-x-4 py-1">
+                                                                                                    <Button
+                                                                                                        onClick={() => handleEdit(id, title)}
+                                                                                                        disabled={loadingFileSave}
+                                                                                                    >
+                                                                                                        Edit
+                                                                                                    </Button>
+                                                                                                    <Button
+                                                                                                        onClick={() => handleDelete({ levelId, semester: semesterKey, subject: subjectKey, section: sectionKey, id, fileName })}
+                                                                                                        disabled={loadingDelete === id || loadingFileSave}
+                                                                                                        className="relative"
+                                                                                                    >
+                                                                                                        {loadingDelete === id ? (
+                                                                                                            <Loader className="animate-spin text-white" />
+                                                                                                        ) : (
+                                                                                                            "Delete"
+                                                                                                        )}
+                                                                                                    </Button>
+                                                                                                </div>
+                                                                                            )}
                                                                                         </>
                                                                                     )}
                                                                                 </div>
@@ -532,8 +546,9 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                         </Accordion>
                     </div>
                 ))}
+
             </div>
-        </TutorialsLayout>
+        </TutorialsLayout >
     );
 };
 
