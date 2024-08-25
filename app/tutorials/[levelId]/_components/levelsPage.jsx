@@ -1,3 +1,11 @@
+/**
+ * Renders the Levels page, allowing admins to manage tutorials by adding, editing, or deleting lessons.
+ * @param {object} tutorialData - Initial tutorial data fetched from Firestore.
+ * @param {string} tutorialData.levelId - ID of the current level.
+ * @returns {ReactElement} LevelsPage React component.
+ */
+
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
@@ -356,7 +364,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     }
 
     return (
-        <TutorialsLayout title={choseLevelTitle(levelId)} pathName={levelId} path={levelId}>
+        <TutorialsLayout tutorialData={tutorialData} title={choseLevelTitle(levelId)} pathName={levelId} path={levelId}>
             <div className="w-full shadow-lg border-2 border-primary rounded-lg">
                 {isAdmin && (
                     <div className="p-4 bg-gray-100 border-b border-primary rounded-t-lg">

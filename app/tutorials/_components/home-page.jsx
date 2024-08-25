@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -39,17 +41,6 @@ const HomePage = () => {
             className="hidden sm:block"
           />
         </div>
-        <div className="w-full my-8 bg-gray-100 p-4 rounded-lg border-2 border-primary block lg:hidden">
-        <h2 className="text-xl font-bold mb-4">Sidebar</h2>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-
-        {/* Add more sidebar content here */}
-      </div>
         <div className="mt-4 flex flex-col md:flex-row space-y-2 space-x-0 md:space-y-0  md:space-x-2 py-10 w-full">
           <Input
             className="bg-transparent border-4 border-primary active:border-primary text-xl active:focus:ring-black py-6 placeholder:text-xl placeholder:text-primary/50 text-primary"
@@ -59,20 +50,7 @@ const HomePage = () => {
         </div>
         <Levels />
       </div>
-
-      {/* Sidebar */}
-      <aside className="w-72 lg:mb-0 bg-gray-100 p-4 ml-6 rounded-lg border-2 border-primary hidden lg:block">
-        <h2 className="text-xl font-bold mb-4">Sidebar</h2>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-        <p className="mb-4">Additional information or links can go here.</p>
-
-        {/* Add more sidebar content here */}
-      </aside>
-    </div>
+ </div>
   );
 };
 

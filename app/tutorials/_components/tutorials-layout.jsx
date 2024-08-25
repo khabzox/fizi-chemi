@@ -6,8 +6,9 @@ import { House } from "lucide-react";
 import Levels from "./levels";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Sidebar from "./sidebar";
 
-const TutorialsLayout = ({ children, title, pathName, path }) => {
+const TutorialsLayout = ({ children, tutorialData, title, pathName, path }) => {
   return (
     <>
       {/* <div className="px-5 lg:px-20 mt-10">
@@ -49,17 +50,8 @@ const TutorialsLayout = ({ children, title, pathName, path }) => {
               className="hidden sm:block"
             />
           </div>
-          <div className="w-full my-8 bg-gray-100 p-4 rounded-lg border-2 border-primary block lg:hidden">
-            <h2 className="text-xl font-bold mb-4">Sidebar</h2>
-            <p className="mb-4">Additional information or links can go here.</p>
-            <p className="mb-4">Additional information or links can go here.</p>
-            <p className="mb-4">Additional information or links can go here.</p>
-            <p className="mb-4">Additional information or links can go here.</p>
-            <p className="mb-4">Additional information or links can go here.</p>
-            <p className="mb-4">Additional information or links can go here.</p>
+          <Sidebar className="w-full my-8 p-4 block lg:hidden" tutorialData={tutorialData} />
 
-            {/* Add more sidebar content here */}
-          </div>
           <div className="mt-4 flex space-x-2 py-10 w-full">
             <Input
               className="bg-transparent border-4 border-primary active:border-primary active:focus:ring-black py-6 text-xl placeholder:text-xl placeholder:text-primary/50 text-primary"
@@ -71,17 +63,7 @@ const TutorialsLayout = ({ children, title, pathName, path }) => {
         </div>
 
         {/* Sidebar */}
-        <aside className="w-72 lg:mb-0 bg-gray-100 p-4 ml-6 rounded-lg border-2 border-primary hidden lg:block">
-          <h2 className="text-xl font-bold mb-4">Sidebar</h2>
-          <p className="mb-4">Additional information or links can go here.</p>
-          <p className="mb-4">Additional information or links can go here.</p>
-          <p className="mb-4">Additional information or links can go here.</p>
-          <p className="mb-4">Additional information or links can go here.</p>
-          <p className="mb-4">Additional information or links can go here.</p>
-          <p className="mb-4">Additional information or links can go here.</p>
-
-          {/* Add more sidebar content here */}
-        </aside>
+        <Sidebar className="w-72 lg:mb-0 p-4 ml-6 hidden lg:block" tutorialData={tutorialData} />
       </div>
     </>
   );
