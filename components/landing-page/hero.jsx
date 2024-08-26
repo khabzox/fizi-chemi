@@ -17,17 +17,17 @@ export default function Hero() {
           >
             Découvrez la physique
             <br />
-            et la chimie avec 
+            et la chimie avec
             <br />
             <span className="text-secondary">FiziChemi !</span>
           </h1>
           <p className="md:w-1/2 py-5 text-sm sm:text-base md:text-xl text-accent-TextHover font-semibold mb-8">
-          Plongez dans des tutoriels captivants et restez à jour avec les dernières actualités scientifiques. Transformez votre apprentissage avec nos ressources interactives et expertises.
+            Plongez dans des tutoriels captivants et restez à jour avec les dernières actualités scientifiques. Transformez votre apprentissage avec nos ressources interactives et expertises.
           </p>
           <HeroBtn
             text={"Commencez"}
             href="/tutorials"
-            // className=""
+          // className=""
           />
         </div>
         <div className="mt-10 flex justify-center xl:absolute right-0">
