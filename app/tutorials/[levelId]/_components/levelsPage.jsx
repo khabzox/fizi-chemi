@@ -18,7 +18,7 @@ import { db, storage } from "@/config/firebase";
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-import { Grip, Loader } from "lucide-react";
+import { Grip, Loader, Pencil, Trash, Trash2 } from "lucide-react";
 
 import {
     getFormattedSemesterName,
@@ -531,130 +531,135 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                 {`Il n'y a pas encore de ${section.title}`} 😅
                                                                             </p>
                                                                         ) : (
-                                                                            <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
-                                                                                <Droppable droppableId={sectionKey}>
-                                                                                    {(provided) => (
-                                                                                        <div
-                                                                                            {...provided.droppableProps}
-                                                                                            ref={(ref) => {
-                                                                                                provided.innerRef(ref);
-                                                                                                containerRef.current = ref;
-                                                                                            }}
-                                                                                        >
-                                                                                            {Object.entries(section.files).map(
-                                                                                                ([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
-                                                                                                    <Draggable
-                                                                                                        key={id}
-                                                                                                        draggableId={id}
-                                                                                                        index={fileIndex}
-                                                                                                        isDragDisabled={!isAdmin}
-                                                                                                    >
-                                                                                                        {(provided, snapshot) => (
-                                                                                                            <div
-                                                                                                                ref={provided.innerRef}
-                                                                                                                {...provided.draggableProps}
+                                                                            <>
+                                                                                <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
+                                                                                    <Droppable droppableId={sectionKey}>
+                                                                                        {(provided) => (
+                                                                                            <div
+                                                                                                {...provided.droppableProps}
+                                                                                                ref={(ref) => {
+                                                                                                    provided.innerRef(ref);
+                                                                                                    containerRef.current = ref;
+                                                                                                }}
+                                                                                            >
+                                                                                                {Object.entries(section.files).map(
 
-                                                                                                                key={id}
-                                                                                                                className="px-4 border-b border-primary bg-white flex items-center justify-between space-x-2"
-                                                                                                            >
-                                                                                                                {isAdmin && (
-                                                                                                                    <div className="drag-handle" {...provided.dragHandleProps}>
-                                                                                                                        <span className="drag-icon cursor-move"><Grip size={12} /></span>
-                                                                                                                    </div>
-                                                                                                                )}
 
-                                                                                                                {editingFile === id ? (
-                                                                                                                    <div className="py-1 flex items-center justify-between w-full">
-                                                                                                                        <Input
-                                                                                                                            value={newTitle}
-                                                                                                                            onChange={(e) => setNewTitle(e.target.value)}
-                                                                                                                            className="flex-1 mr-2 bg-white border-2 border-primary"
-                                                                                                                        />
-                                                                                                                        <Button
-                                                                                                                            onClick={() =>
-                                                                                                                                handleSave({
-                                                                                                                                    levelId,
-                                                                                                                                    semester: semesterKey,
-                                                                                                                                    subject: subjectKey,
-                                                                                                                                    section: sectionKey,
-                                                                                                                                    id,
-                                                                                                                                })
-                                                                                                                            }
-                                                                                                                            disabled={loadingFileSave}
-                                                                                                                            className="relative mr-2"
-                                                                                                                        >
-                                                                                                                            {loadingFileSave ? (
-                                                                                                                                <Loader className="animate-spin h-5 w-5 text-white" />
-                                                                                                                            ) : (
-                                                                                                                                "Done"
+                                                                                                    ([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
+                                                                                                        <Draggable
+                                                                                                            key={id}
+                                                                                                            draggableId={id}
+                                                                                                            index={fileIndex}
+                                                                                                            isDragDisabled={!isAdmin}
+                                                                                                        >
+                                                                                                            {(provided) => (
+                                                                                                                <div
+                                                                                                                    ref={provided.innerRef}
+                                                                                                                    {...provided.draggableProps}
+
+                                                                                                                    key={id}
+                                                                                                                    className="px-4 border-b border-primary bg-white flex items-center justify-between space-x-2"
+                                                                                                                >
+                                                                                                                    {isAdmin && (
+                                                                                                                        <div className="drag-handle" {...provided.dragHandleProps}>
+                                                                                                                            <span className="drag-icon cursor-move"><Grip size={12} /></span>
+                                                                                                                        </div>
+                                                                                                                    )}
+
+                                                                                                                    {editingFile === id ? (
+                                                                                                                        <div className="py-1 flex items-center justify-between w-full">
+                                                                                                                            <Input
+                                                                                                                                value={newTitle}
+                                                                                                                                onChange={(e) => setNewTitle(e.target.value)}
+                                                                                                                                className="flex-1 mr-2 bg-white border-2 border-primary"
+                                                                                                                            />
+                                                                                                                            <Button
+                                                                                                                                onClick={() =>
+                                                                                                                                    handleSave({
+                                                                                                                                        levelId,
+                                                                                                                                        semester: semesterKey,
+                                                                                                                                        subject: subjectKey,
+                                                                                                                                        section: sectionKey,
+                                                                                                                                        id,
+                                                                                                                                    })
+                                                                                                                                }
+                                                                                                                                disabled={loadingFileSave}
+                                                                                                                                className="relative mr-2"
+                                                                                                                            >
+                                                                                                                                {loadingFileSave ? (
+                                                                                                                                    <Loader className="animate-spin h-5 w-5 text-white" />
+                                                                                                                                ) : (
+                                                                                                                                    "Done"
+                                                                                                                                )}
+                                                                                                                            </Button>
+                                                                                                                            <Button
+                                                                                                                                onClick={handleCancel}
+                                                                                                                                disabled={loadingFileSave}
+                                                                                                                                className="relative"
+                                                                                                                            >
+                                                                                                                                Cancel
+                                                                                                                            </Button>
+                                                                                                                        </div>
+                                                                                                                    ) : (
+                                                                                                                        <>
+
+                                                                                                                            <a
+                                                                                                                                href={downloadLink}
+                                                                                                                                download={
+                                                                                                                                    selectedSection === "Vidéos" ? downloadLink : false
+                                                                                                                                }
+                                                                                                                                target="_blank"
+                                                                                                                                className="flex-1"
+                                                                                                                            >
+                                                                                                                                <div className="flex items-center py-2 justify-between cursor-pointer">
+                                                                                                                                    <span>{title}</span>
+                                                                                                                                </div>
+                                                                                                                            </a>
+
+                                                                                                                            {isAdmin && (
+                                                                                                                                <div className="flex items-center space-x-4 py-1">
+                                                                                                                                    <Button
+                                                                                                                                        onClick={() => handleEdit(id, title)}
+                                                                                                                                        disabled={loadingFileSave}
+                                                                                                                                    >
+                                                                                                                                        <Pencil />
+                                                                                                                                    </Button>
+                                                                                                                                    <Button
+                                                                                                                                        onClick={() =>
+                                                                                                                                            handleDelete({
+                                                                                                                                                levelId,
+                                                                                                                                                semester: semesterKey,
+                                                                                                                                                subject: subjectKey,
+                                                                                                                                                section: sectionKey,
+                                                                                                                                                id,
+                                                                                                                                                fileName,
+                                                                                                                                            })
+                                                                                                                                        }
+                                                                                                                                        disabled={loadingDelete === id || loadingFileSave}
+                                                                                                                                        className="relative"
+                                                                                                                                    >
+                                                                                                                                        {loadingDelete === id ? (
+                                                                                                                                            <Loader className="animate-spin text-white" />
+                                                                                                                                        ) : (
+                                                                                                                                            <Trash2 />
+                                                                                                                                        )}
+                                                                                                                                    </Button>
+                                                                                                                                </div>
                                                                                                                             )}
-                                                                                                                        </Button>
-                                                                                                                        <Button
-                                                                                                                            onClick={handleCancel}
-                                                                                                                            disabled={loadingFileSave}
-                                                                                                                            className="relative"
-                                                                                                                        >
-                                                                                                                            Cancel
-                                                                                                                        </Button>
-                                                                                                                    </div>
-                                                                                                                ) : (
-                                                                                                                    <>
-                                                                                                                        <Link
-                                                                                                                            href={downloadLink}
-                                                                                                                            download={
-                                                                                                                                selectedSection === "Vidéos" ? downloadLink : undefined
-                                                                                                                            }
-                                                                                                                            target="_blank"
-                                                                                                                            className="flex-1"
-                                                                                                                        >
-                                                                                                                            <div className="flex items-center py-2 justify-between cursor-pointer">
-                                                                                                                                <span>{title}</span>
-                                                                                                                            </div>
-                                                                                                                        </Link>
+                                                                                                                        </>
+                                                                                                                    )}
+                                                                                                                </div>
 
-                                                                                                                        {isAdmin && (
-                                                                                                                            <div className="flex items-center space-x-4 py-1">
-                                                                                                                                <Button
-                                                                                                                                    onClick={() => handleEdit(id, title)}
-                                                                                                                                    disabled={loadingFileSave}
-                                                                                                                                >
-                                                                                                                                    Edit
-                                                                                                                                </Button>
-                                                                                                                                <Button
-                                                                                                                                    onClick={() =>
-                                                                                                                                        handleDelete({
-                                                                                                                                            levelId,
-                                                                                                                                            semester: semesterKey,
-                                                                                                                                            subject: subjectKey,
-                                                                                                                                            section: sectionKey,
-                                                                                                                                            id,
-                                                                                                                                            fileName,
-                                                                                                                                        })
-                                                                                                                                    }
-                                                                                                                                    disabled={loadingDelete === id || loadingFileSave}
-                                                                                                                                    className="relative"
-                                                                                                                                >
-                                                                                                                                    {loadingDelete === id ? (
-                                                                                                                                        <Loader className="animate-spin text-white" />
-                                                                                                                                    ) : (
-                                                                                                                                        "Delete"
-                                                                                                                                    )}
-                                                                                                                                </Button>
-                                                                                                                            </div>
-                                                                                                                        )}
-                                                                                                                    </>
-                                                                                                                )}
-                                                                                                            </div>
-
-                                                                                                        )}
-                                                                                                    </Draggable>
-                                                                                                )
-                                                                                            )}
-                                                                                            {provided.placeholder}
-                                                                                        </div>
-                                                                                    )}
-                                                                                </Droppable>
-                                                                            </DragDropContext>
+                                                                                                            )}
+                                                                                                        </Draggable>
+                                                                                                    )
+                                                                                                )}
+                                                                                                {provided.placeholder}
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </Droppable>
+                                                                                </DragDropContext>
+                                                                            </>
                                                                         )}
                                                                     </AccordionContent>
                                                                 </AccordionItem>
