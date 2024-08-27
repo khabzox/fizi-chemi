@@ -20,6 +20,7 @@ coverage
 
 # Vercel
 .vercel
+vercel.json
 
 # Build Outputs
 .next/
