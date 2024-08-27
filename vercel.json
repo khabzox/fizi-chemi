@@ -1,15 +1,17 @@
 {
   "builds": [
     {
-      "src": "/apps/nextjs-app/package.json",
+      "src": "apps/nextjs-app/package.json",
       "use": "@vercel/next"
     }
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/apps/nextjs-app/$1",
-      "continue": true
+      "dest": "/apps/nextjs-app/$1"
     }
   ]
 }
