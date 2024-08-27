@@ -1,0 +1,73 @@
+# Node.js dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# local env files
+.env*.local
+
+# Next.js build output
+.next/
+out/
+
+# Astro build output
+dist/
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
+
+# Yarn v2/3
+.yarn/
+.pnp/
+.pnp.js
+
+# JetBrains IDE
+*.iml
+
+# MacOS Finder
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
+
+# Linux directory config file
+.directory
+
+# Build artifacts
+*.out
+*.tmp
+
+# Package-lock.json (optional, if using yarn or pnpm)
+package-lock.json
+
+# .astro temporary cache
+.astro/
+
+# Miscellaneous
+*.pem
+*.key
+*.crt
+*.sublime-workspace
+*.sublime-project
+*.rbc
+*.sw?
+*.log

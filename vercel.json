@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "packages/astro-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "packages/nextjs-app/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(about-us|contact-us|faqs|404)?",
+      "dest": "/packages/astro-app/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/packages/nextjs-app/$1"
+    }
+  ]
+}
