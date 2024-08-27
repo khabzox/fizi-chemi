@@ -1,0 +1,15 @@
+{
+  "builds": [
+    {
+      "src": "/apps/nextjs-app/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/apps/nextjs-app/$1",
+      "continue": true
+    }
+  ]
+}
