@@ -1,37 +1,23 @@
 {
-  "name": "fizi-chemi",
-  "version": "1.0.0",
-  "workspaces": [
-    "packages/astro-app",
-    "packages/nextjs-app"
-  ],
+  "name": "monorepo",
+  "private": true,
   "scripts": {
-    "start:astro": "cd packages/astro-app && astro dev",
-    "start:next": "cd packages/nextjs-app && next dev",
-    "start": "concurrently \"npm run start:astro\" \"npm run start:next\"",
-    "build:astro": "cd packages/astro-app && astro build",
-    "build:next": "cd packages/nextjs-app && next build",
-    "build": "npm run build:astro && npm run build:next",
-    "lint:astro": "cd packages/astro-app && eslint .",
-    "lint:next": "cd packages/nextjs-app && eslint .",
-    "lint": "npm run lint:astro && npm run lint:next",
-    "clean:astro": "cd packages/astro-app && rm -rf node_modules/.cache",
-    "clean:next": "cd packages/nextjs-app && rm -rf .next",
-    "clean": "npm run clean:astro && npm run clean:next"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.3.0",
-    "astro-eslint-parser": "^1.0.2",
-    "concurrently": "^8.0.0",
-    "eslint": "^9.9.1",
-    "eslint-plugin-astro": "^1.2.3",
-    "eslint-plugin-react": "^7.35.0"
+    "prettier": "^3.2.5",
+    "turbo": "^2.1.0",
+    "typescript": "^5.4.5"
   },
-  "dependencies": {
-    "astro": "^4.14.5",
-    "next": "^14.2.5",
-    "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  }
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@10.8.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
