@@ -3,9 +3,8 @@ node_modules/
 .pnp/
 .pnp.js
 
-# Environment files
-.env
-.env.*.local
+# local env files
+.env*.local
 
 # Next.js build output
 .next/
