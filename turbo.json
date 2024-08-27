@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": ["nextjs-app/.next/**", "astro-app/dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -14,5 +14,6 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalDependencies": ["nextjs-app", "astro-app"]
 }
