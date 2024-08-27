@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "builds": [
+    {
+<<<<<<< HEAD
+      "src": "packages/astro-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "packages/nextjs-app/package.json",
+      "use": "@vercel/next"
+=======
+      "src": "nextjs/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "astro/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "astro/dist"
+      }
+>>>>>>> 8521895ffd7c63abbe0233d26a989a4071d8460f
+    }
+  ],
+  "routes": [
+    {
+<<<<<<< HEAD
+      "src": "/(about-us|contact-us|faqs|404)?",
+      "dest": "/packages/astro-app/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/packages/nextjs-app/$1"
+=======
+      "src": "/",
+      "dest": "/astro/dist/index.html"
+    },
+    {
+      "src": "/tutorials/(.*)",
+      "dest": "/nextjs/$1"
+>>>>>>> 8521895ffd7c63abbe0233d26a989a4071d8460f
+    }
+  ]
+}
