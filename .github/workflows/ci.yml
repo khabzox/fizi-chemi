@@ -21,10 +21,16 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd apps/nextjs-app
+          npm install
 
       - name: Run lint for nextjs-app
-        run: cd apps/nextjs-app && npm run lint
+        run: |
+          cd apps/nextjs-app
+          npm run lint
 
-      - name: Build
-        run: npm run build
+      - name: Build nextjs-app
+        run: |
+          cd apps/nextjs-app
+          npm run build
