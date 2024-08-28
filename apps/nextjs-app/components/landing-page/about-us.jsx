@@ -13,7 +13,7 @@ const AboutUs = () => {
            FiziChemi : Votre Partenaire en Sciences
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-primary-hover font-semibold mb-8">
-          Chez FiziChemi, nous nous engageons à rendre la physique et la chimie accessibles et passionnantes pour tous. Notre plateforme propose des tutoriels détaillés, des articles de blog informatifs, et des ressources interactives pour vous aider à exceller dans vos études et à nourrir votre curiosité scientifique.
+          Chez FiziChemi, nous nous engageons à rendre la physique et la chimie accessibles et passionnantes pour tous. Notre plateforme propose des tutoriels détaillés et des ressources interactives pour vous aider à exceller dans vos études et à nourrir votre curiosité scientifique.
           </p>
         </div>
         <div className=" md:w-1/2 mt-10 md:mt-0 flex justify-center md:justify-end">
@@ -22,7 +22,6 @@ const AboutUs = () => {
             alt="Students"
             width={500}
             height={300}
-            //   className="w-full"
           />
         </div>
       </div>

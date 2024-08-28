@@ -88,9 +88,9 @@ const Footer = () => {
             <li>
               <Link
                 className="text-primary transition hover:text-primary/75"
-                href="/blog"
+                href="/faqs"
               >
-                Blog
+               FAQS
               </Link>
             </li>
           </ul>
