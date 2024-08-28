@@ -1,24 +1,44 @@
 import { NextResponse } from "next/server";
 
-const mockData = [
-  { id: 1, title: "Introduction to Next.js" },
-  { id: 2, title: "Advanced React Techniques" },
-  { id: 3, title: "Understanding TypeScript" },
-  { id: 4, title: "Building APIs with Next.js" },
-  { id: 5, title: "Deploying Next.js Applications" },
-];
+async function fetchTutorialData() {
+  const response = await fetch("http://localhost:3000/api/tutorial");
+  if (!response.ok) {
+    throw new Error("Failed to fetch tutorial data");
+  }
+  return response.json();
+}
 
 export async function GET(request) {
   const url = new URL(request.url);
   const query = url.searchParams.get("q") || "";
 
+  // Fetch tutorial data
+  let data;
+  try {
+    data = await fetchTutorialData();
+  } catch (error) {
+    return NextResponse.error();
+  }
+
   // Normalize query to lowercase and split into words
   const words = query.toLowerCase().split(/\s+/);
 
-  // Filter mock data based on the query words
-  const results = mockData.filter((item) =>
-    words.some((word) => item.title.toLowerCase().includes(word))
-  );
+  // Helper function to recursively search through nested data
+  const searchNestedData = (obj) => {
+    let results = [];
+    if (obj.title && words.some((word) => obj.title.toLowerCase().includes(word))) {
+      results.push(obj);
+    }
+    for (const key in obj) {
+      if (obj[key] && typeof obj[key] === "object") {
+        results = results.concat(searchNestedData(obj[key]));
+      }
+    }
+    return results;
+  };
+
+  // Filter results based on the query
+  const results = searchNestedData(data);
 
   return NextResponse.json({ results });
 }

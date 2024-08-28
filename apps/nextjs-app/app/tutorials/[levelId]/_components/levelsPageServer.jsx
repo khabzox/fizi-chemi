@@ -1,5 +1,5 @@
 import LevelsPage from "./levelsPage";
-import { getTutorial } from "./fetchData";
+import { getTutorial } from "@/components/tutorials/fetchData";
 
 export default async function LevelsPageServer({ params }) {
 

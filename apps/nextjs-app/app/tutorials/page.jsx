@@ -1,4 +1,4 @@
-import HomePage from "@/app/tutorials/_components/home-page";
+import HomePage from "@/components/tutorials/home-page";
 
 const TutorialsPage = () => {
   return (

@@ -18,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="fr">
         <body className={`${PlusJakartaSans.className}`}>{children}</body>
       </html>
     </ClerkProvider>

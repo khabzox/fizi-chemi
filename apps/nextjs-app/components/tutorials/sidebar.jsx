@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { gsap } from "gsap";
@@ -183,7 +185,7 @@ function Sidebar({ tutorialData, className }) {
                                                     >
                                                         {Object.entries(subject.sections).map(([sectionKey, section]) => (
                                                             <li key={sectionKey} className="text-sm text-primary bg-muted-hover p-1 rounded-md border-l-2 border-primary pl-4 hover:underline">
-                                                                <Link href={"/"} className="flex justify-between items-center">
+                                                                <Link href={`/tutorials/${categoryKey}#tutorials#semester_1#chemistry#${sectionKey}`} className="flex justify-between items-center">
                                                                     {section.title}
                                                                     <SquareArrowOutUpRight className="pr-2" />
                                                                 </Link>

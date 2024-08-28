@@ -9,7 +9,35 @@ import Levels from "./levels";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 const HomePage = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    // Extract search query from the URL
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("q");
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, []);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearch();
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg p-6 px-5 lg:px-20 mt-10 flex flex-col-reverse lg:flex-row">
       {/* Main Content */}
@@ -45,12 +73,18 @@ const HomePage = () => {
           <Input
             className="bg-transparent border-4 border-primary active:border-primary text-xl active:focus:ring-black py-6 placeholder:text-xl placeholder:text-primary/50 text-primary"
             placeholder="Rechercher..."
+            value={searchQuery}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <Button className="h-15 px-8 text-xl font-bold">Rechercher</Button>
+          <Button
+            onClick={handleSearch}
+            className="h-15 px-8 text-xl font-bold"
+          >Rechercher</Button>
         </div>
         <Levels />
       </div>
- </div>
+    </div>
   );
 };
 

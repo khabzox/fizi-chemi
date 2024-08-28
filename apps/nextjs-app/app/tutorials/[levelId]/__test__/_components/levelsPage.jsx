@@ -12,7 +12,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
-import TutorialsLayout from "@/app/tutorials/_components/tutorials-layout.jsx";
+import TutorialsLayout from "@/components/tutorials/tutorials-layout.jsx";
 
 import { db, storage } from "@/config/firebase";
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -542,106 +542,106 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                     <AccordionContent>
 
 
-                                                                    {section.files.length === 0 ? (
-        <p className="p-2 px-4 border-b border-primary">
-            {`Il n'y a pas encore de ${section.title}`} 😅
-        </p>
-    ) : (
-        <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
-            <Droppable droppableId="section-files-and-sidebars">
-                {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {section.files.map((file, index) => (
-                            <Draggable
-                                key={file.id}
-                                draggableId={file.id}
-                                index={index}
-                                isDragDisabled={!isAdmin}
-                            >
-                                {(provided) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        className="px-4 py-2 border-b border-primary bg-white flex items-center justify-between space-x-2"
-                                    >
-                                        {isAdmin && (
-                                            <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
-                                                <Grip size={12} className="mr-2 cursor-move" />
-                                            </div>
-                                        )}
+                                                                        {section.files.length === 0 ? (
+                                                                            <p className="p-2 px-4 border-b border-primary">
+                                                                                {`Il n'y a pas encore de ${section.title}`} 😅
+                                                                            </p>
+                                                                        ) : (
+                                                                            <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
+                                                                                <Droppable droppableId="section-files-and-sidebars">
+                                                                                    {(provided) => (
+                                                                                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                                                            {section.files.map((file, index) => (
+                                                                                                <Draggable
+                                                                                                    key={file.id}
+                                                                                                    draggableId={file.id}
+                                                                                                    index={index}
+                                                                                                    isDragDisabled={!isAdmin}
+                                                                                                >
+                                                                                                    {(provided) => (
+                                                                                                        <div
+                                                                                                            ref={provided.innerRef}
+                                                                                                            {...provided.draggableProps}
+                                                                                                            className="px-4 py-2 border-b border-primary bg-white flex items-center justify-between space-x-2"
+                                                                                                        >
+                                                                                                            {isAdmin && (
+                                                                                                                <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
+                                                                                                                    <Grip size={12} className="mr-2 cursor-move" />
+                                                                                                                </div>
+                                                                                                            )}
 
-                                        <div className="flex-1">
-                                            <a
-                                                href={file.downloadLink}
-                                                download={file.downloadLink}
-                                                target="_blank"
-                                                className="flex items-center py-2 cursor-pointer"
-                                            >
-                                                <span>{file.title}</span>
-                                            </a>
-                                        </div>
+                                                                                                            <div className="flex-1">
+                                                                                                                <a
+                                                                                                                    href={file.downloadLink}
+                                                                                                                    download={file.downloadLink}
+                                                                                                                    target="_blank"
+                                                                                                                    className="flex items-center py-2 cursor-pointer"
+                                                                                                                >
+                                                                                                                    <span>{file.title}</span>
+                                                                                                                </a>
+                                                                                                            </div>
 
-                                        {file.sidebar && file.files && file.files.length > 0 ? (
-                                            <Accordion type="single" collapsible className="w-full">
-                                                <AccordionItem value={`section-sidebar-${index}`}>
-                                                    <AccordionTrigger className="w-full">
-                                                        {file.title} (Sidebar)
-                                                    </AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <Droppable droppableId={`section-files-sidebar-${index}`}>
-                                                            {(provided) => (
-                                                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                                    {file.files.map((subFile, subIndex) => (
-                                                                        <Draggable
-                                                                            key={subFile.id}
-                                                                            draggableId={`section-files-sidebar-files-${subFile.id}`}
-                                                                            index={subIndex}
-                                                                            isDragDisabled={!isAdmin}
-                                                                        >
-                                                                            {(provided) => (
-                                                                                <div
-                                                                                    ref={provided.innerRef}
-                                                                                    {...provided.draggableProps}
-                                                                                    className="px-4 py-2 bg-white flex items-center justify-between space-x-2"
-                                                                                >
-                                                                                    {isAdmin && (
-                                                                                        <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
-                                                                                            <Grip size={12} className="mr-2 cursor-move" />
+                                                                                                            {file.sidebar && file.files && file.files.length > 0 ? (
+                                                                                                                <Accordion type="single" collapsible className="w-full">
+                                                                                                                    <AccordionItem value={`section-sidebar-${index}`}>
+                                                                                                                        <AccordionTrigger className="w-full">
+                                                                                                                            {file.title} (Sidebar)
+                                                                                                                        </AccordionTrigger>
+                                                                                                                        <AccordionContent>
+                                                                                                                            <Droppable droppableId={`section-files-sidebar-${index}`}>
+                                                                                                                                {(provided) => (
+                                                                                                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                                                                                                        {file.files.map((subFile, subIndex) => (
+                                                                                                                                            <Draggable
+                                                                                                                                                key={subFile.id}
+                                                                                                                                                draggableId={`section-files-sidebar-files-${subFile.id}`}
+                                                                                                                                                index={subIndex}
+                                                                                                                                                isDragDisabled={!isAdmin}
+                                                                                                                                            >
+                                                                                                                                                {(provided) => (
+                                                                                                                                                    <div
+                                                                                                                                                        ref={provided.innerRef}
+                                                                                                                                                        {...provided.draggableProps}
+                                                                                                                                                        className="px-4 py-2 bg-white flex items-center justify-between space-x-2"
+                                                                                                                                                    >
+                                                                                                                                                        {isAdmin && (
+                                                                                                                                                            <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
+                                                                                                                                                                <Grip size={12} className="mr-2 cursor-move" />
+                                                                                                                                                            </div>
+                                                                                                                                                        )}
+
+                                                                                                                                                        <div className="flex-1">
+                                                                                                                                                            <a
+                                                                                                                                                                href={subFile.downloadLink}
+                                                                                                                                                                download={subFile.downloadLink}
+                                                                                                                                                                target="_blank"
+                                                                                                                                                                className="flex items-center py-2 cursor-pointer"
+                                                                                                                                                            >
+                                                                                                                                                                <span>{subFile.title}</span>
+                                                                                                                                                            </a>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                )}
+                                                                                                                                            </Draggable>
+                                                                                                                                        ))}
+                                                                                                                                        {provided.placeholder}
+                                                                                                                                    </div>
+                                                                                                                                )}
+                                                                                                                            </Droppable>
+                                                                                                                        </AccordionContent>
+                                                                                                                    </AccordionItem>
+                                                                                                                </Accordion>
+                                                                                                            ) : null}
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                </Draggable>
+                                                                                            ))}
+                                                                                            {provided.placeholder}
                                                                                         </div>
                                                                                     )}
-
-                                                                                    <div className="flex-1">
-                                                                                        <a
-                                                                                            href={subFile.downloadLink}
-                                                                                            download={subFile.downloadLink}
-                                                                                            target="_blank"
-                                                                                            className="flex items-center py-2 cursor-pointer"
-                                                                                        >
-                                                                                            <span>{subFile.title}</span>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
-                                                                        </Draggable>
-                                                                    ))}
-                                                                    {provided.placeholder}
-                                                                </div>
-                                                            )}
-                                                        </Droppable>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            </Accordion>
-                                        ) : null}
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
-    )}
+                                                                                </Droppable>
+                                                                            </DragDropContext>
+                                                                        )}
                                                                     </AccordionContent>
                                                                 </AccordionItem>
                                                             </Accordion>

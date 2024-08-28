@@ -12,19 +12,19 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
-import TutorialsLayout from "@/app/tutorials/_components/tutorials-layout.jsx";
+import TutorialsLayout from "@/components/tutorials/tutorials-layout.jsx";
 
 import { db, storage } from "@/config/firebase";
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { ref, deleteObject, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-import { Grip, Loader } from "lucide-react";
+import { Grip, Loader, Pencil, Trash2, Check, X } from "lucide-react";
 
 import {
     getFormattedSemesterName,
     getFormattedSubjectsName,
     getFormattedSectionsName
-} from "./getFormatted";
+} from "@/components/tutorials/getFormatted";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -103,7 +103,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         if (hash) {
             // Split the hash by '#' and ignore the first element
             const parts = hash.slice(1).split('#').slice(1);
-            console.log(parts)
             handleHash(parts);
         }
     }, []);
@@ -189,9 +188,15 @@ const LevelsPage = ({ tutorialData, levelId }) => {
         setNewTitle('');
     };
 
-    const handleDelete = async ({ levelId, semester, subject, section, id }) => {
+
+    const handleDelete = async ({ levelId, semester, subject, section, id, fileUrl }) => {
         // Set loading to true immediately after the delete action is initiated
         setLoadingDelete(id);
+
+        const extractFilePathFromUrl = (url) => {
+            const encodedPath = url.split("/o/")[1].split("?alt=media")[0];
+            return decodeURIComponent(encodedPath);
+        };
 
         try {
             // Firestore: Reference to the section document
@@ -208,6 +213,15 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                 await updateDoc(sectionRef, {
                     files: updatedFiles
                 });
+
+                // Extract the file path from the URL
+                const filePath = extractFilePathFromUrl(fileUrl);
+
+                // Firebase Storage: Reference to the file in storage
+                const fileRef = ref(storage, filePath);
+
+                // Delete the file from storage
+                await deleteObject(fileRef);
 
                 // Update the UI only after a successful response from Firestore
                 setSemesters((prevSemesters) => {
@@ -229,6 +243,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             setLoadingDelete(false);
         }
     };
+
 
     // Memoized semester and subject names
     const uniqueSemesters = useMemo(() => Object.values(semesters).map(sem => sem.title), [semesters]);
@@ -417,7 +432,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     }
 
     return (
-        <TutorialsLayout tutorialData={tutorialData} title={choseLevelTitle(levelId)} pathName={levelId} path={levelId}>
+        <TutorialsLayout tutorialData={tutorialData} title={choseLevelTitle(levelId)} pathName={levelId} path={`tutorials/${levelId}`}>
             <div className="w-full border-2 border-primary rounded-lg">
                 {isAdmin && (
                     <div className="p-4 bg-gray-100 border-b border-primary rounded-t-lg">
@@ -602,7 +617,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                         }}
                                                                                     >
                                                                                         {Object.entries(section.files).map(
-                                                                                            ([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
+                                                                                            ([fileKey, { title, downloadLink, id }], fileIndex) => (
                                                                                                 <Draggable
                                                                                                     key={id}
                                                                                                     draggableId={id}
@@ -643,7 +658,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                                         {loadingFileSave ? (
                                                                                                                             <Loader className="animate-spin h-5 w-5 text-white" />
                                                                                                                         ) : (
-                                                                                                                            "Done"
+                                                                                                                            <Check size={18} />
                                                                                                                         )}
                                                                                                                     </Button>
                                                                                                                     <Button
@@ -651,7 +666,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                                         disabled={loadingFileSave}
                                                                                                                         className="relative"
                                                                                                                     >
-                                                                                                                        Cancel
+                                                                                                                        <X size={18} />
                                                                                                                     </Button>
                                                                                                                 </div>
                                                                                                             ) : (
@@ -664,17 +679,17 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                                         target="_blank"
                                                                                                                         className="flex-1"
                                                                                                                     >
-                                                                                                                        <div className="flex items-center py-2 justify-between cursor-pointer">
+                                                                                                                        <div className="flex items-center py-1 justify-between cursor-pointer">
                                                                                                                             <span>{title}</span>
                                                                                                                         </div>
                                                                                                                     </a>
                                                                                                                     {isAdmin && (
-                                                                                                                        <div className="flex items-center space-x-4 py-1">
+                                                                                                                        <div className="flex items-center space-x-2 py-1">
                                                                                                                             <Button
                                                                                                                                 onClick={() => handleEdit(id, title)}
                                                                                                                                 disabled={loadingFileSave === id || loadingDelete === id}
                                                                                                                             >
-                                                                                                                                Edit
+                                                                                                                                <Pencil size={18} />
                                                                                                                             </Button>
                                                                                                                             <Button
                                                                                                                                 onClick={() =>
@@ -684,7 +699,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                                                         subject: subjectKey,
                                                                                                                                         section: sectionKey,
                                                                                                                                         id,
-                                                                                                                                        fileName,
+                                                                                                                                        fileUrl: downloadLink,
                                                                                                                                     })
                                                                                                                                 }
                                                                                                                                 disabled={loadingDelete === id || loadingFileSave === id}
@@ -693,7 +708,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                                                                                                                 {loadingDelete === id ? (
                                                                                                                                     <Loader className="animate-spin text-white" />
                                                                                                                                 ) : (
-                                                                                                                                    "Delete"
+                                                                                                                                    <Trash2 size={18} />
                                                                                                                                 )}
                                                                                                                             </Button>
                                                                                                                         </div>
