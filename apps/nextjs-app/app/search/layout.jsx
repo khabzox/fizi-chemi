@@ -2,6 +2,9 @@ import Footer from "@/components/tutorials/footer";
 import Navbar from "@/components/landing-page/navbar";
 import { getTutorial } from "@/components/tutorials/fetchData";
 import TutorialsLayout from "@/components/tutorials/tutorials-layout";
+import { SearchPage } from "@/config/metadata";
+
+export const metadata = SearchPage;
 
 const SearchLayout = async ({ children }) => {
   const tutorialData = await getTutorial()

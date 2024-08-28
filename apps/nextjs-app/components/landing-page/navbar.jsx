@@ -22,8 +22,8 @@ const Navbar = () => {
   };
 
   const dropdownItems = [
-    { href: "/exams/college", label: "Collège" },
-    { href: "/exams/lycee", label: "Lycée" },
+    { href: "/tutorials", label: "Collège" },
+    { href: "/tutorials", label: "Lycée" },
   ];
 
   return (
@@ -73,7 +73,7 @@ const Navbar = () => {
                 <UserButton />
               </div>
             ) : (
-              <LoginBtn text="Se connecter" href="/sign-in" />
+              <LoginBtn text="Se connecter" href="/auth/sign-in" />
             )}
           </div>
           <div className="block md:hidden">
@@ -131,7 +131,7 @@ const Navbar = () => {
               {userId ? (
                 <UserButton />
               ) : (
-                <LoginBtn text="Se connecter" href="/sign-in" />
+                <LoginBtn text="Se connecter" href="/auth/sign-in" />
               )}
             </li>
           </ul>

@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
   // Utility function to handle errors
@@ -175,21 +176,33 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  const sectionTitles = {
-    cours: "Cours",
-    course_powerpoint: "Cours PowerPoint",
-    corrected_exercises: "Exercices corrigés",
-    supervised_homework: "Devoirs surveillés",
-    educational_sheets: "Fiches pédagogiques",
-    diagnostic_assessments: "Évaluations diagnostiques",
-    videos: "Vidéos",
-  };
-
-  const subjectTitles = {
-    physics: "Physique",
-    chemistry: "Chimie",
-  };
   try {
+    const { sessionClaims } = auth();
+
+    if (sessionClaims === null) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    } else if (sessionClaims?.metadata?.role !== "admin") {
+      return NextResponse.json(
+        { message: "You don't have permission to access this resource" },
+        { status: 403 }
+      );
+    }
+
+    const sectionTitles = {
+      cours: "Cours",
+      course_powerpoint: "Cours PowerPoint",
+      corrected_exercises: "Exercices corrigés",
+      supervised_homework: "Devoirs surveillés",
+      educational_sheets: "Fiches pédagogiques",
+      diagnostic_assessments: "Évaluations diagnostiques",
+      videos: "Vidéos",
+    };
+
+    const subjectTitles = {
+      physics: "Physique",
+      chemistry: "Chimie",
+    };
+
     // Parse the request body
     const body = await req.json();
     const timestamp = new Date().toISOString();

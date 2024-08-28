@@ -1,7 +1,4 @@
-import React from 'react'
-
-function LevelsLayout({ children, params }) {
+function LevelsLayout({ children }) {
     return children
 }
-
 export default LevelsLayout
