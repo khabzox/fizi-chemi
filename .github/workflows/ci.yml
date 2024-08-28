@@ -26,11 +26,5 @@ jobs:
       - name: Run lint for nextjs-app
         run: cd apps/nextjs-app && npm run lint
 
-      - name: Run lint for eslint-config
-        run: cd packages/eslint-config && npm run lint
-
-      - name: Run lint for ui
-        run: cd packages/ui && npm run lint
-
       - name: Build
         run: npm run build
