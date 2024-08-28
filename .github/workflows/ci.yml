@@ -18,13 +18,22 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint
-        run: npm run lint
+      - name: Run lint for nextjs-app
+        run: cd apps/nextjs-app && npm run lint
+
+      - name: Run lint for typescript-config
+        run: cd packages/typescript-config && npm run lint
+
+      - name: Run lint for eslint-config
+        run: cd packages/eslint-config && npm run lint
+
+      - name: Run lint for ui
+        run: cd packages/ui && npm run lint
 
       - name: Build
         run: npm run build
