@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import config from "@/config/app";
 
 async function fetchTutorialData() {
-  const response = await fetch("http://localhost:3000/api/tutorial");
+  const response = await fetch(`${config.domainName}/api/tutorial`);
   if (!response.ok) {
     throw new Error("Failed to fetch tutorial data");
   }
