@@ -1,81 +1,52 @@
-# Turborepo starter
+# FiziChemi
 
-This is an official starter Turborepo.
+FiziChemi is a platform dedicated to helping students learn physics and chemistry through interactive tutorials and resources. This monorepo project leverages Next.js for the frontend, Tailwind CSS for styling, and Turborepo for managing multiple packages efficiently.
 
-## Using this example
+## TODO
 
-Run the following command:
+- [ ] **Labo for Online Experiments**: Add a lab feature for online physics and chemistry experiments where students and teachers can collaborate.
+- [ ] **Admin Sidebar Management**: Allow admin users to add a sidebar under each section.
+- [ ] **Redesign Tutorials Page**: Revamp the tutorials page for a better user experience.
+- [ ] **Subscription Feature**: Implement subscription options using Lemon Squeezy or PayPal.
+- [ ] **Community Platform**: Build a community platform for students and teachers.
+- [ ] **Whiteboard in Labo**: Include a whiteboard inside the lab for explanations and collaborative work.
+- [ ] **Animations**: Add animations to enhance the user interface.
+- [ ] **Chatbot in Labo**: Integrate a chatbot in the lab to assist students and teachers.
 
-```sh
-npx create-turbo@latest
-```
+## Overview
 
-## What's inside?
+FiziChemi offers a wide range of physics and chemistry tutorials designed for different educational levels. The platform aims to make learning these subjects more engaging and accessible.
 
-This Turborepo includes the following packages/apps:
+## Monorepo Structure
 
-### Apps and Packages
+This project uses a monorepo setup managed by Turborepo. The repository is organized into the following packages:
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- **apps/nextjs-app**: The main Next.js application.
+- **packages/ui**: Shared UI components, styled with Tailwind CSS.
+- **packages/config**: Shared configuration files, including ESLint and Tailwind CSS config.
+- **packages/utils**: Utility functions shared across the project.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Getting Started
 
-### Utilities
 
-This Turborepo has some additional tools already setup for you:
+1. Clone the repository:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+   ```bash
+   git clone https://github.com/khabzox/fizi-chemi.git
+   ```
 
-### Build
+2. Navigate to the project directory:
 
-To build all apps and packages, run the following command:
+    ```bash
+    cd fizi-chemi
+    ```
+    
+3. Running the Project
 
-```
-cd my-turborepo
-pnpm build
-```
+    ```bash
+    npm run dev
+    ```
 
-### Develop
+### License
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+This project is licensed under the MIT License. See the LICENSE file for details.
