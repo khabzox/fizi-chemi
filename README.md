@@ -1,4 +1,17 @@
-# FiziChemi
+<div align="center" class="flex justify-center items-center">
+  <img src="https://fizi-chemi.vercel.app/images/logo.png" width="90" alt="FiziChemi Logo">
+   <br /><br />
+</div>
+
+
+
+<p align="center">
+<img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white">
+<img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white">
+<img src="https://img.shields.io/badge/threejs-black?style=for-the-badge&logo=three.js&logoColor=white">
+<img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB">
+<img src="https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white">
+</p>
 
 FiziChemi is a platform dedicated to helping students learn physics and chemistry through interactive tutorials and resources. This monorepo project leverages Next.js for the frontend, Tailwind CSS for styling, and Turborepo for managing multiple packages efficiently.
 
