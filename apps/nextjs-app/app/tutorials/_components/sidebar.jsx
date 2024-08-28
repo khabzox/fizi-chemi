@@ -145,9 +145,9 @@ function Sidebar({ tutorialData, className }) {
                         className="pl-6 border-l-2 border-gray-300 overflow-hidden"
                     >
                         {Object.entries(semesters).map(([semesterKey, semester]) => (
-                            <div key={semesterKey} className="mb-3">
+                            <div key={semesterKey} className="mb-2">
                                 <div
-                                    className="flex justify-between items-center cursor-pointer text-lg font-semibold text-primary bg-secondary-hover/90 p-1 rounded-md mb-4 border-l-4 border-primary pl-4 hover:underline"
+                                    className="flex justify-between items-center cursor-pointer text-lg font-semibold text-primary bg-secondary-hover/90 p-1 rounded-md mb-2 border-l-4 border-primary pl-4 hover:underline"
                                     onClick={() => handleSemesterClick(categoryKey, semesterKey)}
                                 >
                                     {semester.title}
@@ -161,11 +161,11 @@ function Sidebar({ tutorialData, className }) {
                                     ref={(el) => (semesterRefs.current[`${categoryKey}-${semesterKey}`] = el)}
                                     className="overflow-hidden"
                                 >
-                                    <ul className="pl-6 space-y-4 overflow-hidden border-l-2 border-gray-300">
+                                    <ul className="pl-6 space-y-2 overflow-hidden border-l-2 border-gray-300">
                                         {Object.entries(semester.subjects).map(([subjectKey, subject], subjectIndex) => {
                                             const key = `${categoryKey}-${semesterKey}-${subjectIndex}`;
                                             return (
-                                                <li key={subjectKey} className="mb-4">
+                                                <li key={subjectKey} className="mt-2">
                                                     <div
                                                         className="flex justify-between items-center cursor-pointer text-base text-primary bg-destructive-hover p-1 rounded-md mb-2 border-l-2 border-primary pl-4 hover:underline"
                                                         onClick={() => handleSubjectClick(categoryKey, semesterKey, subjectIndex)}

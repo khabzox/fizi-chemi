@@ -18,7 +18,7 @@ import { db, storage } from "@/config/firebase";
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-import { Grip, Loader } from "lucide-react";
+import { Grip, Loader, Pencil, Trash2 } from "lucide-react";
 
 import {
     getFormattedSemesterName,
@@ -70,7 +70,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     const [formDataLesson, setFormDataLesson] = useState({
         title: "",
         downloadLink: "",
-        fileLocation: []
+        fileLocation: [],
     });
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -88,57 +88,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
     const [loadingFileSave, setLoadingFileSave] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(null);
 
-    // Navigation
-    const [openItems, setOpenItems] = useState({
-        semester: null,
-        subject: null,
-        section: null
-    });
-
-    const containerTutorialsRef = useRef(null);
-
-    // Update state based on hash
-    useEffect(() => {
-        const hash = window.location.hash;
-        if (hash) {
-            // Split the hash by '#' and ignore the first element
-            const parts = hash.slice(1).split('#').slice(1);
-            console.log(parts)
-            handleHash(parts);
-        }
-    }, []);
-
-    // Handle hash parts to update state
-    const handleHash = (parts) => {
-        if (parts.length > 0) {
-            const [semesterKey, subjectKey, sectionKey] = parts;
-            setOpenItems({
-                semester: `semester-${semesterKey}`,
-                subject: `subject-${subjectKey}`,
-                section: `section-${sectionKey}`
-            });
-        }
-    };
-
-    // Scroll to the section after state updates
-    useEffect(() => {
-        const targetId = openItems.section;
-        if (targetId) {
-            // Find the target element and scroll into view
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-    }, [openItems]);
-
-    const handleAccordionTrigger = (key, type) => {
-        setOpenItems((prev) => ({
-            [type]: prev[type] === key
-        }));
-    };
-
-
     const handleEdit = (id, currentTitle) => {
         setEditingFile(id);
         setNewTitle(currentTitle);
@@ -146,7 +95,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
 
     const handleSave = async ({ levelId, semester, subject, section, id }) => {
         setLoadingFileSave(true);
-        setEditingFile(id)
 
         try {
             const sectionRef = doc(db, levelId, semester, "subjects", subject, "sections", section);
@@ -180,7 +128,6 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             console.error("Error saving file: ", error);
         } finally {
             setLoadingFileSave(false);
-            setEditingFile(false)
         }
     };
 
@@ -363,8 +310,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             fileLocation: []
         });
     };
-
-    const handleDragEnd = async (semesterKey, subjectKey, sectionKey, result) => {
+    const handleDragEnd = async (semesterKey, subjectKey, sectionKey, result, isSidebar = false) => {
         if (!result.destination) return;
 
         const semesterData = semesters[semesterKey];
@@ -393,6 +339,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                 sectionKey
             );
 
+            // Update Firestore based on whether it's a sidebar or not
             await updateDoc(sectionDocRef, {
                 files: reorderedFiles,
             });
@@ -403,6 +350,7 @@ const LevelsPage = ({ tutorialData, levelId }) => {
             setReorderSaving((prev) => ({ ...prev, [sectionKey]: false }));
         }
     };
+
 
     function choseLevelTitle(levelId) {
         switch (levelId) {
@@ -479,6 +427,20 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                         {selectedSection && (
                             <>
                                 <form onSubmit={sendFormDataLesson}>
+
+                                    <div className="mb-4">
+                                        <Label className="block mb-2">add Bar (Optional):</Label>
+                                        <Input
+                                            id="bar"
+                                            name="bar"
+                                            value={formDataLesson.bar}
+                                            type="text"
+                                            className="p-2 border-2 border-primary bg-white rounded w-full placeholder:text-primary/60"
+                                            placeholder="Enter Bar Title..."
+                                            onChange={handleChange}
+                                            required />
+                                    </div>
+
                                     <div className="mb-4">
                                         <Label className="block mb-2">File Title:</Label>
                                         <Input
@@ -554,166 +516,136 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                         )}
                     </div>
                 )}
-                <div id="tutorials">
-                    {Object.entries(semesters).map(([semesterKey, semester]) => (
-                        <Accordion type="single" collapsible key={semesterKey} value={openItems.semester === `semester-${semesterKey}` ? `semester-${semesterKey}` : undefined}>
-                            <AccordionItem value={`semester-${semesterKey}`}>
-                                <AccordionTrigger
-                                    className="flex justify-between items-center bg-primary text-white p-4"
-                                    onClick={() => handleAccordionTrigger(`semester-${semesterKey}`, 'semester')}
-                                >
+
+                {Object.entries(semesters).map(([semesterKey, semester], sectionIndex) => (
+                    <div key={semesterKey}>
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value={`semester-${sectionIndex}`}>
+                                <AccordionTrigger className="flex justify-between items-center bg-primary text-white p-4">
                                     <span>{semester.title}</span>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    {Object.entries(semester.subjects).map(([subjectKey, subject]) => (
-                                        <Accordion type="single" collapsible key={subjectKey} value={openItems.subject === `subject-${subjectKey}` ? `subject-${subjectKey}` : undefined}>
-                                            <AccordionItem value={`subject-${subjectKey}`}>
-                                                <AccordionTrigger
-                                                    className="p-4 border-b bg-secondary-hover border-primary flex items-center"
-                                                    onClick={() => handleAccordionTrigger(`subject-${subjectKey}`, 'subject')}
-                                                >
+                                    {Object.entries(semester.subjects).map(([subjectKey, subject], subjectIndex) => (
+                                        <Accordion key={subjectKey} type="single" collapsible>
+                                            <AccordionItem value={`subject-${subjectIndex}`}>
+                                                <AccordionTrigger className="p-4 border-b bg-secondary-hover border-primary flex items-center">
                                                     {subject.title}
                                                 </AccordionTrigger>
                                                 <AccordionContent>
-                                                    {Object.entries(subject.sections).map(([sectionKey, section]) => (
-                                                        <Accordion type="single" collapsible key={sectionKey} value={openItems.section === `section-${sectionKey}` ? `section-${sectionKey}` : undefined}>
-                                                            <AccordionItem value={`section-${sectionKey}`} id={`section-${sectionKey}`}>
-                                                                <AccordionTrigger
-                                                                    className="p-2 px-4 border-b border-primary"
-                                                                    alert={reorderSaving[sectionKey] ? "saving..." : ""}
-                                                                    onClick={() => handleAccordionTrigger(`section-${sectionKey}`, 'section')}
-                                                                >
-                                                                    {section.title}
-                                                                </AccordionTrigger>
-                                                                <AccordionContent>
-                                                                    {Object.keys(section.files).length === 0 ? (
-                                                                        <p className="p-2 px-4 border-b border-primary">
-                                                                            {`Il n'y a pas encore de ${section.title}`} 😅
-                                                                        </p>
-                                                                    ) : (
-                                                                        <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
-                                                                            <Droppable droppableId={sectionKey}>
-                                                                                {(provided) => (
-                                                                                    <div
-                                                                                        {...provided.droppableProps}
-                                                                                        ref={(ref) => {
-                                                                                            provided.innerRef(ref);
-                                                                                            containerTutorialsRef.current = ref;
-                                                                                        }}
-                                                                                    >
-                                                                                        {Object.entries(section.files).map(
-                                                                                            ([fileKey, { title, downloadLink, id, fileName }], fileIndex) => (
-                                                                                                <Draggable
-                                                                                                    key={id}
-                                                                                                    draggableId={id}
-                                                                                                    index={fileIndex}
-                                                                                                    isDragDisabled={!isAdmin}
-                                                                                                >
-                                                                                                    {(provided, snapshot) => (
-                                                                                                        <div
-                                                                                                            ref={provided.innerRef}
-                                                                                                            {...provided.draggableProps}
-                                                                                                            className="px-4 border-b border-primary bg-white flex items-center justify-between space-x-2"
-                                                                                                        >
-                                                                                                            {isAdmin && (
-                                                                                                                <div className="drag-handle" {...provided.dragHandleProps}>
-                                                                                                                    <span className="drag-icon cursor-move"><Grip size={12} /></span>
-                                                                                                                </div>
-                                                                                                            )}
-                                                                                                            {editingFile === id ? (
-                                                                                                                <div className="py-1 flex items-center justify-between w-full">
-                                                                                                                    <Input
-                                                                                                                        value={newTitle}
-                                                                                                                        onChange={(e) => setNewTitle(e.target.value)}
-                                                                                                                        className="flex-1 mr-2 bg-white border-2 border-primary"
-                                                                                                                    />
-                                                                                                                    <Button
-                                                                                                                        onClick={() =>
-                                                                                                                            handleSave({
-                                                                                                                                levelId,
-                                                                                                                                semester: semesterKey,
-                                                                                                                                subject: subjectKey,
-                                                                                                                                section: sectionKey,
-                                                                                                                                id,
-                                                                                                                            })
-                                                                                                                        }
-                                                                                                                        disabled={loadingFileSave}
-                                                                                                                        className="relative mr-2"
-                                                                                                                    >
-                                                                                                                        {loadingFileSave ? (
-                                                                                                                            <Loader className="animate-spin h-5 w-5 text-white" />
-                                                                                                                        ) : (
-                                                                                                                            "Done"
-                                                                                                                        )}
-                                                                                                                    </Button>
-                                                                                                                    <Button
-                                                                                                                        onClick={handleCancel}
-                                                                                                                        disabled={loadingFileSave}
-                                                                                                                        className="relative"
-                                                                                                                    >
-                                                                                                                        Cancel
-                                                                                                                    </Button>
-                                                                                                                </div>
-                                                                                                            ) : (
-                                                                                                                <>
-                                                                                                                    <a
-                                                                                                                        href={downloadLink}
-                                                                                                                        download={
-                                                                                                                            selectedSection === "Vidéos" ? false : downloadLink
-                                                                                                                        }
-                                                                                                                        target="_blank"
-                                                                                                                        className="flex-1"
-                                                                                                                    >
-                                                                                                                        <div className="flex items-center py-2 justify-between cursor-pointer">
-                                                                                                                            <span>{title}</span>
-                                                                                                                        </div>
-                                                                                                                    </a>
-                                                                                                                    {isAdmin && (
-                                                                                                                        <div className="flex items-center space-x-4 py-1">
-                                                                                                                            <Button
-                                                                                                                                onClick={() => handleEdit(id, title)}
-                                                                                                                                disabled={loadingFileSave === id || loadingDelete === id}
-                                                                                                                            >
-                                                                                                                                Edit
-                                                                                                                            </Button>
-                                                                                                                            <Button
-                                                                                                                                onClick={() =>
-                                                                                                                                    handleDelete({
-                                                                                                                                        levelId,
-                                                                                                                                        semester: semesterKey,
-                                                                                                                                        subject: subjectKey,
-                                                                                                                                        section: sectionKey,
-                                                                                                                                        id,
-                                                                                                                                        fileName,
-                                                                                                                                    })
-                                                                                                                                }
-                                                                                                                                disabled={loadingDelete === id || loadingFileSave === id}
-                                                                                                                                className="relative"
-                                                                                                                            >
-                                                                                                                                {loadingDelete === id ? (
-                                                                                                                                    <Loader className="animate-spin text-white" />
-                                                                                                                                ) : (
-                                                                                                                                    "Delete"
-                                                                                                                                )}
-                                                                                                                            </Button>
-                                                                                                                        </div>
-                                                                                                                    )}
-                                                                                                                </>
-                                                                                                            )}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                </Draggable>
-                                                                                            )
-                                                                                        )}
-                                                                                        {provided.placeholder}
+                                                    {Object.entries(subject.sections).map(([sectionKey, section], sectionIndex) => (
+                                                        <div key={sectionKey}>
+                                                            <Accordion type="single" collapsible>
+                                                                <AccordionItem value={sectionKey}>
+                                                                    <AccordionTrigger className="p-2 px-4 border-b border-primary" alert={reorderSaving[sectionKey] ? "saving..." : ""}>
+                                                                        {section.title}
+                                                                    </AccordionTrigger>
+                                                                    <AccordionContent>
+
+
+                                                                    {section.files.length === 0 ? (
+        <p className="p-2 px-4 border-b border-primary">
+            {`Il n'y a pas encore de ${section.title}`} 😅
+        </p>
+    ) : (
+        <DragDropContext onDragEnd={(result) => handleDragEnd(semesterKey, subjectKey, sectionKey, result)}>
+            <Droppable droppableId="section-files-and-sidebars">
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {section.files.map((file, index) => (
+                            <Draggable
+                                key={file.id}
+                                draggableId={file.id}
+                                index={index}
+                                isDragDisabled={!isAdmin}
+                            >
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        className="px-4 py-2 border-b border-primary bg-white flex items-center justify-between space-x-2"
+                                    >
+                                        {isAdmin && (
+                                            <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
+                                                <Grip size={12} className="mr-2 cursor-move" />
+                                            </div>
+                                        )}
+
+                                        <div className="flex-1">
+                                            <a
+                                                href={file.downloadLink}
+                                                download={file.downloadLink}
+                                                target="_blank"
+                                                className="flex items-center py-2 cursor-pointer"
+                                            >
+                                                <span>{file.title}</span>
+                                            </a>
+                                        </div>
+
+                                        {file.sidebar && file.files && file.files.length > 0 ? (
+                                            <Accordion type="single" collapsible className="w-full">
+                                                <AccordionItem value={`section-sidebar-${index}`}>
+                                                    <AccordionTrigger className="w-full">
+                                                        {file.title} (Sidebar)
+                                                    </AccordionTrigger>
+                                                    <AccordionContent>
+                                                        <Droppable droppableId={`section-files-sidebar-${index}`}>
+                                                            {(provided) => (
+                                                                <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                                    {file.files.map((subFile, subIndex) => (
+                                                                        <Draggable
+                                                                            key={subFile.id}
+                                                                            draggableId={`section-files-sidebar-files-${subFile.id}`}
+                                                                            index={subIndex}
+                                                                            isDragDisabled={!isAdmin}
+                                                                        >
+                                                                            {(provided) => (
+                                                                                <div
+                                                                                    ref={provided.innerRef}
+                                                                                    {...provided.draggableProps}
+                                                                                    className="px-4 py-2 bg-white flex items-center justify-between space-x-2"
+                                                                                >
+                                                                                    {isAdmin && (
+                                                                                        <div className="drag-handle flex items-center" {...provided.dragHandleProps}>
+                                                                                            <Grip size={12} className="mr-2 cursor-move" />
+                                                                                        </div>
+                                                                                    )}
+
+                                                                                    <div className="flex-1">
+                                                                                        <a
+                                                                                            href={subFile.downloadLink}
+                                                                                            download={subFile.downloadLink}
+                                                                                            target="_blank"
+                                                                                            className="flex items-center py-2 cursor-pointer"
+                                                                                        >
+                                                                                            <span>{subFile.title}</span>
+                                                                                        </a>
                                                                                     </div>
-                                                                                )}
-                                                                            </Droppable>
-                                                                        </DragDropContext>
-                                                                    )}
-                                                                </AccordionContent>
-                                                            </AccordionItem>
-                                                        </Accordion>
+                                                                                </div>
+                                                                            )}
+                                                                        </Draggable>
+                                                                    ))}
+                                                                    {provided.placeholder}
+                                                                </div>
+                                                            )}
+                                                        </Droppable>
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            </Accordion>
+                                        ) : null}
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
+    )}
+                                                                    </AccordionContent>
+                                                                </AccordionItem>
+                                                            </Accordion>
+                                                        </div>
                                                     ))}
                                                 </AccordionContent>
                                             </AccordionItem>
@@ -722,8 +654,9 @@ const LevelsPage = ({ tutorialData, levelId }) => {
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
-                    ))}
-                </div>
+                    </div>
+                ))}
+
             </div>
         </TutorialsLayout >
     );

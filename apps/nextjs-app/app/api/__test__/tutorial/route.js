@@ -12,6 +12,13 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
 
+
+/**
+ * Handles GET requests to fetch data from Firestore documents.
+ *
+ * @returns {Promise<Response>} - The response object with appropriate status code and data.
+ */
+
 export async function GET() {
   // Utility function to handle errors
   function handleError(error, context) {
@@ -41,13 +48,49 @@ export async function GET() {
 
     return {
       title: sectionData.title || "Untitled Section",
-      files: filesArray.map((fileData) => ({
-        id: fileData.id,
-        createdAt: fileData.createdAt,
-        downloadLink: fileData.downloadLink,
-        title: fileData.title,
-        updatedAt: fileData.updatedAt,
-      })),
+      files: filesArray.map((fileData) => {
+        // Initialize the file object with common fields
+        const fileObject = {
+          title: fileData.title || "",
+          updatedAt: fileData.updatedAt || "",
+          createdAt: fileData.createdAt || "",
+        };
+
+        // Conditionally include fields based on the value of sidebar
+        if (fileData.sidebar !== "sidebar") {
+          // Include fields only if sidebar is not "sidebar"
+          fileObject.id = fileData.id || "";
+          fileObject.downloadLink = fileData.downloadLink || "";
+        }
+
+        // Conditionally include `files` array if it exists and is not empty
+        if (fileData.files && fileData.files.length > 0) {
+          fileObject.files = fileData.files.map((nestedFile) => ({
+            title: nestedFile.title || "",
+            id: nestedFile.id || "",
+            downloadLink: nestedFile.downloadLink || "",
+            updatedAt: nestedFile.updatedAt || "",
+            createdAt: nestedFile.createdAt || "",
+          }));
+        }
+
+        // Conditionally include `sidebar` if it exists and is not empty
+        if (fileData.sidebar) {
+          fileObject.sidebar = fileData.sidebar;
+        }
+
+        // Conditionally include `sidebarId` if it exists and is not empty
+        if (fileData.sidebarId) {
+          fileObject.sidebarId = fileData.sidebarId;
+        }
+
+        // Conditionally include `id` if it exists and is not empty
+        if (fileData.id) {
+          fileObject.id = fileData.id;
+        }
+
+        return fileObject;
+      }),
     };
   }
 
@@ -174,6 +217,13 @@ export async function GET() {
   }
 }
 
+/**
+ * Handles POST requests to create a new lesson and update Firestore documents.
+ *
+ * @param {Request} req - The incoming request object.
+ * @returns {Response} - The response object with appropriate status code and message.
+ */
+
 export async function POST(req) {
   const sectionTitles = {
     cours: "Cours",
@@ -189,14 +239,15 @@ export async function POST(req) {
     physics: "Physique",
     chemistry: "Chimie",
   };
+
   try {
     // Parse the request body
     const body = await req.json();
     const timestamp = new Date().toISOString();
-    const { title, downloadLink, fileLocation } = body;
+    const { title, downloadLink, fileLocation, sidebar } = body;
 
-    // Check for required fields
-    if (!title || !downloadLink || !fileLocation) {
+    // Validate the basic fields
+    if (!title || !fileLocation) {
       return NextResponse.json(
         { message: "Error", error: "Missing required fields" },
         { status: 400 }
@@ -212,13 +263,31 @@ export async function POST(req) {
     ] = fileLocation;
 
     // Prepare the file object
-    const fileData = {
-      id: uuidv4(), // Generate a unique ID for the file
+    let fileData = {
+      id: uuidv4(), // Generate a unique ID for the file as a string
       title,
-      downloadLink,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
+
+    // Add downloadLink if it's not a sidebar
+    if (!sidebar) {
+      fileData.downloadLink = downloadLink;
+    } else {
+      // If it's a sidebar, structure the data accordingly
+      fileData.sidebar = sidebar;
+      fileData.id = uuidv4();
+      fileData.sidebarId = uuidv4(); // Generate a unique sidebar ID as a string
+      fileData.files = [
+        {
+          title: body.file?.title || "",
+          id: uuidv4(), // Generate a unique ID for the nested file as a string
+          downloadLink: body.file?.downloadLink || "",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        },
+      ];
+    }
 
     // Reference to the Firestore documents
     const semesterDocRef = doc(db, LEVEL_ID, semester);

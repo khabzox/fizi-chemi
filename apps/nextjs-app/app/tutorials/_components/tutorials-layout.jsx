@@ -14,7 +14,7 @@ const TutorialsLayout = ({ children, tutorialData, title, pathName, path }) => {
       {/* <div className="px-5 lg:px-20 mt-10">
       <Button>Go Back</Button>
     </div> */}
-      <div className="bg-white shadow-md rounded-lg p-6 px-5 lg:px-20 mt-2 flex flex-col-reverse lg:flex-row">
+      <div className="bg-white rounded-lg p-6 px-5 lg:px-20 mt-2 flex flex-col-reverse lg:flex-row">
         {/* Main Content */}
         <div className="flex-1">
           <div className="bg-gradient-to-r from-secondary to-destructive-hover text-white p-4 rounded-lg flex justify-around items-center min-h-40 px-10">
