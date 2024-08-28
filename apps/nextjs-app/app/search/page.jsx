@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import useSearch from "@/hooks/useSearch";
-import { File, SquareArrowOutUpRight, Loader, Loader2 } from "lucide-react";
+import { File, SquareArrowOutUpRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export const LoadingCard = () => (
