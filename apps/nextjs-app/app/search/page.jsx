@@ -50,7 +50,7 @@ const SearchPage = () => {
       {results.length === 0 ? (
         <p className="text-lg text-subtle">Aucun résultat trouvé.</p>
       ) : (
-        <ul className="space-y-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-4">
+        <ul className="space-y-2 md:space-y-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-4">
           {results.map((result) => (
             <li key={result.id} className="relative">
               <Link href={result.downloadLink} target="_blank" aria-label={`Télécharger ${result.title}`} onClick={() => handleFileClick(result.id)}>
