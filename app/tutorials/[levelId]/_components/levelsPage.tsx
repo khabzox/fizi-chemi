@@ -828,33 +828,31 @@ function choseLevelTitle(levelId: string): string {
           </div>
         )}
         <div id="tutorials">
-          {Object.entries(semesters).map(([semesterKey, semesterValue]) => {
-            const semester = semesterValue as SemesterData;
-            return (
-              <Accordion
-                type="single"
-                collapsible
-                key={semesterKey}
-                value={
-                  openItems.semester === `semester-${semesterKey}`
-                    ? `semester-${semesterKey}`
-                    : undefined
-                }
-              >
-                <AccordionItem value={`semester-${semesterKey}`}>
-                  <AccordionTrigger
-                    className="flex justify-between items-center bg-primary text-white p-4"
-                    onClick={() =>
-                      handleAccordionTrigger(
-                        `semester-${semesterKey}`,
-                        "semester"
-                      )
-                    }
-                  >
-                    <span>{semester.title}</span>
-                  </AccordionTrigger>
+          {Object.entries(semesters).map(([semesterKey, semesterValue]) => (
+            <Accordion
+              type="single"
+              collapsible
+              key={semesterKey}
+              value={
+                openItems.semester === `semester-${semesterKey}`
+                  ? `semester-${semesterKey}`
+                  : undefined
+              }
+            >
+              <AccordionItem value={`semester-${semesterKey}`}>
+                <AccordionTrigger
+                  className="flex justify-between items-center bg-primary text-white p-4"
+                  onClick={() =>
+                    handleAccordionTrigger(
+                      `semester-${semesterKey}`,
+                      "semester"
+                    )
+                  }
+                >
+                  <span>{(semesterValue as SemesterData).title}</span>
+                </AccordionTrigger>
                 <AccordionContent>
-                  {Object.entries(semester.subjects).map(
+                  {Object.entries((semesterValue as SemesterData).subjects).map(
                     ([subjectKey, subject]) => (
                       <Accordion
                         type="single"
@@ -1132,7 +1130,7 @@ function choseLevelTitle(levelId: string): string {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          )}
+          ))}
         </div>
       </div>
     </TutorialsLayout>
