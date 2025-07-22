@@ -1132,7 +1132,7 @@ function choseLevelTitle(levelId: string): string {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          ));
+          )}
         </div>
       </div>
     </TutorialsLayout>
