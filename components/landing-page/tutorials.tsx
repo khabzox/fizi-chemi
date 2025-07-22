@@ -71,6 +71,7 @@ const Tutorials = () => {
             </Button>
           </div>
         </div>
+        
         <Levels />
       </div>
     </section>
