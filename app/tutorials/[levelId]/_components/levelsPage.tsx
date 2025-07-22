@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
-import TutorialsLayout from "@/components/tutorials/tutorials-layout.jsx";
+import TutorialsLayout from "@/components/tutorials/tutorials-layout";
 
 import { db, storage } from "@/config/firebase";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
