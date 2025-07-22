@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import { Plus_Jakarta_Sans } from "next/font/google";
-import "@/styles/globals.css";
+import "./globals.css";
 import { HomePage } from "@/config/metadata";
 
 const PlusJakartaSans = Plus_Jakarta_Sans({
