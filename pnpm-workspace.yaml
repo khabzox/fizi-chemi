@@ -1,4 +1,0 @@
-onlyBuiltDependencies:
-  - '@clerk/shared'
-  - protobufjs
-  - unrs-resolver
