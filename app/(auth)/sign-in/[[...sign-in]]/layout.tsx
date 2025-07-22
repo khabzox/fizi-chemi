@@ -3,7 +3,9 @@ import Footer from "@/components/landing-page/footer";
 
 // export const metadata = SignInPage;
 
-export default function SignInLayout({ children }) {
+import { ReactNode } from "react";
+
+export default function SignInLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <>
             <Navbar />

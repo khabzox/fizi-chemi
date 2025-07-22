@@ -9,7 +9,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Sidebar from "./sidebar";
 
-const TutorialsLayout = ({ children, tutorialData, title, pathName, path }) => {
+import { ReactNode } from "react";
+
+interface TutorialsLayoutProps {
+  children: ReactNode;
+  tutorialData: any;
+  title: string;
+  pathName: string;
+  path: string;
+}
+
+const TutorialsLayout = ({ children, tutorialData, title, pathName, path }: TutorialsLayoutProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
@@ -28,7 +38,7 @@ const TutorialsLayout = ({ children, tutorialData, title, pathName, path }) => {
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
       handleSearch();

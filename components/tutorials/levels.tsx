@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Folder, SquareArrowOutUpRight, Loader2 } from "lucide-react";
 
 const Levels = () => {
-  const [loadingLevel, setLoadingLevel] = useState(null);
+  const [loadingLevel, setLoadingLevel] = useState<number | null>(null);
 
-  const handleLevelClick = (index) => {
+  const handleLevelClick = (index: number) => {
     setLoadingLevel(index);
   };
 

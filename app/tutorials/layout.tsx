@@ -5,7 +5,7 @@ import { TutorialsPage } from "@/config/metadata";
 
 export const metadata = TutorialsPage;
 
-const TutorialsLayout = ({ children }) => {
+const TutorialsLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   return (
     <>
       <Navbar />

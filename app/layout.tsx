@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -13,7 +14,11 @@ const PlusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata = HomePage;
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  readonly children: ReactNode;
+}) {
   return (
     <ClerkProvider>
       <html lang="fr">

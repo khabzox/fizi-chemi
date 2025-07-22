@@ -1,4 +1,4 @@
-export const getFormattedSemesterName = (semester) => {
+export const getFormattedSemesterName = (semester: string) => {
   switch (semester) {
     case "Semestre 1":
       return "semester_1";
@@ -9,7 +9,7 @@ export const getFormattedSemesterName = (semester) => {
   }
 };
 
-export const getFormattedSubjectsName = (subject) => {
+export const getFormattedSubjectsName = (subject: string) => {
   switch (subject) {
     case "physics":
       return "Physique";
@@ -20,7 +20,7 @@ export const getFormattedSubjectsName = (subject) => {
   }
 };
 
-export const getFormattedSectionsName = (section) => {
+export const getFormattedSectionsName = (section: string) => {
   switch (section) {
     case "Cours":
       return "cours";

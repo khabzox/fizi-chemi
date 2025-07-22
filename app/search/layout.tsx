@@ -3,10 +3,11 @@ import Navbar from "@/components/landing-page/navbar";
 import { getTutorial } from "@/components/tutorials/fetchData";
 import TutorialsLayout from "@/components/tutorials/tutorials-layout";
 import { SearchPage } from "@/config/metadata";
+import { ReactNode } from "react";
 
 export const metadata = SearchPage;
 
-const SearchLayout = async ({ children }) => {
+const SearchLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
   const tutorialData = await getTutorial()
   return (
     <>

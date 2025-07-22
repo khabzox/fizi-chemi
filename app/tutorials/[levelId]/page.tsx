@@ -2,13 +2,13 @@ import { redirect } from 'next/navigation';
 import LevelsPageServer from './_components/levelsPageServer';
 import { generateMetadataByLevelId } from "@/config/metadata";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: { levelId: string } }) {
   const levelId = params.levelId;
   console.log(levelId); // Debugging log to check the levelId
   return generateMetadataByLevelId(levelId);
 }
 
-export default function Page({ params }) {
+export default function Page({ params }: { readonly params: { readonly levelId: string } }) {
   const levelId = params.levelId;
 
   console.log(levelId);
