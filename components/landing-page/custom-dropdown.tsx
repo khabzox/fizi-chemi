@@ -7,7 +7,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
-export const CustomDropdown = ({ items }) => {
+interface DropdownItem {
+  href: string;
+  label: string;
+}
+
+interface CustomDropdownProps {
+  items: DropdownItem[];
+}
+
+export const CustomDropdown = ({ items }: CustomDropdownProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center cursor-pointer">

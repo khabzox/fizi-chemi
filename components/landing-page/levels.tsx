@@ -3,14 +3,13 @@ import { useState } from 'react';
 import { Folder, SquareArrowOutUpRight, Loader2 } from "lucide-react";
 
 const Levels = () => {
-  const [loadingLevel, setLoadingLevel] = useState(null);
+  const [loadingLevel, setLoadingLevel] = useState<number | null>(null);
 
-  const handleLevelClick = (index) => {
+  const handleLevelClick = (index: number) => {
     setLoadingLevel(index);
-    setTimeout(() => setLoadingLevel(null), 3000);
   };
 
-  const getLink = (title) => {
+  const getLink = (title: string) => {
     switch (title) {
       case "1 AC":
         return "/tutorials/1ac";

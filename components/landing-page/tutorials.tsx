@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 const Tutorials = () => {
-  const [loadingSearch, setLoadingSearch] = useState(null);
+  const [loadingSearch, setLoadingSearch] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
@@ -32,7 +32,7 @@ const Tutorials = () => {
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
       handleSearch();
