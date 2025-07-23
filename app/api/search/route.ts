@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import config from "@/config/app";
 
 async function fetchTutorialData() {
@@ -9,7 +9,7 @@ async function fetchTutorialData() {
   return response.json();
 }
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const query = url.searchParams.get("q") || "";
 
@@ -25,8 +25,8 @@ export async function GET(request) {
   const words = query.toLowerCase().split(/\s+/);
 
   // Helper function to recursively search through nested data
-  const searchNestedData = (obj) => {
-    let results = [];
+  const searchNestedData = (obj: any): any[] => {
+    let results: any[] = [];
     if (obj.title && words.some((word) => obj.title.toLowerCase().includes(word))) {
       results.push(obj);
     }

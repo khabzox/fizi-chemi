@@ -5,9 +5,7 @@ import {
   doc,
   collection,
   getDocs,
-  docs,
-  listCollections,
-  updateDoc,
+  DocumentReference
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
@@ -22,7 +20,7 @@ import { auth } from "@clerk/nextjs/server";
 export async function GET() {
   try {
     // Utility function to handle errors
-    function handleError(error, context) {
+    function handleError(error: Error, context: string) {
       console.error(`Error ${context}:`, error);
       return NextResponse.json(
         { error: `Error ${context}: ${error.message}` },
@@ -31,25 +29,25 @@ export async function GET() {
     }
 
     // Higher-order function to handle errors in async functions
-    function withErrorHandling(fn, context) {
-      return async function (...args) {
+    function withErrorHandling(fn: (...args: any[]) => Promise<any>, context: string) {
+      return async function (...args: any[]) {
         try {
           return await fn(...args);
-        } catch (error) {
+        } catch (error: any) {
           throw new Error(`Error ${context}: ${error.message}`);
         }
       };
     }
 
     // Fetch files for a given section
-    async function fetchFilesForSection(sectionRef) {
+    async function fetchFilesForSection(sectionRef: DocumentReference) {
       const sectionDoc = await getDoc(sectionRef);
-      const sectionData = sectionDoc.data() || {};
+      const sectionData: any = sectionDoc.data() || {};
       const filesArray = sectionData.files || [];
 
       return {
         title: sectionData.title || "Untitled Section",
-        files: filesArray.map((fileData) => ({
+        files: filesArray.map((fileData: any) => ({
           id: fileData.id,
           createdAt: fileData.createdAt,
           downloadLink: fileData.downloadLink,
@@ -67,8 +65,8 @@ export async function GET() {
         return { title: "Untitled Subject", sections: {} };
       }
 
-      const subjectData = subjectDoc.data() || {};
-      const sectionsWithFiles = {};
+      const subjectData: any = subjectDoc.data() || {};
+      const sectionsWithFiles: { [key: string]: any } = {};
 
       const sectionsSnapshot = await getDocs(
         collection(subjectRef, "sections")
@@ -104,8 +102,8 @@ export async function GET() {
           };
         }
 
-        const semesterData = semesterDoc.data() || {};
-        const subjects = {};
+        const semesterData: any = semesterDoc.data() || {};
+        const subjects: { [key: string]: any } = {};
 
         const subjectsSnapshot = await getDocs(
           collection(semesterRef, "subjects")
@@ -150,7 +148,7 @@ export async function GET() {
     // Fetch data for all semesters
     async function fetchAllData() {
       const collectionsNames = ["1ac", "2ac", "3ac", "tc", "1bac", "2bac"];
-      const semesters = {};
+      const semesters: { [key: string]: any } = {};
 
       await Promise.all(
         collectionsNames.map(async (collectionName) => {
@@ -161,7 +159,7 @@ export async function GET() {
               doc(db, collectionName, "semester_1"),
               1
             );
-          } catch (error) {
+          } catch (error: any) {
             handleError(error, `fetching ${collectionName}, semester_1`);
           }
 
@@ -170,7 +168,7 @@ export async function GET() {
               doc(db, collectionName, "semester_2"),
               2
             );
-          } catch (error) {
+          } catch (error: any) {
             handleError(error, `fetching ${collectionName}, semester_2`);
           }
         })
@@ -180,8 +178,11 @@ export async function GET() {
     }
     const data = await fetchAllData();
     return NextResponse.json(data);
-  } catch (error) {
-    return handleError(error, "fetching all data");
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: `Error fetching all data: ${error.message}` },
+      { status: 500 }
+    );
   }
 }
 
@@ -192,8 +193,8 @@ export async function GET() {
  * @returns {Response} - The response object with appropriate status code and message.
  */
 
-export async function POST(req) {
-  const { userId, has } = auth();
+export async function POST(req: Request) {
+  const { userId, has } = await auth();
 
   if (!userId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -241,7 +242,7 @@ export async function POST(req) {
       ] = fileLocation;
 
       // Prepare the file object
-      const fileData = {
+      const fileData: any = {
         id: uuidv4(), // Generate a unique ID for the file
         title,
         downloadLink,
@@ -270,27 +271,27 @@ export async function POST(req) {
       ]);
 
       // Update or create semester document
-      const semesterData = semesterSnap.exists() ? semesterSnap.data() : {};
+      const semesterData: any = semesterSnap.exists() ? semesterSnap.data() : {};
       if (semesterFields && semesterFields.title) {
         semesterData.title = semesterFields.title;
       }
       await setDoc(semesterDocRef, semesterData);
 
       // Update or create subject document
-      const subjectData = subjectSnap.exists()
+      const subjectData: any = subjectSnap.exists()
         ? subjectSnap.data()
-        : { title: subjectTitles[subject] };
+        : { title: subjectTitles[subject as keyof typeof subjectTitles] };
       if (subjectFields && subjectFields.title) {
         subjectData.title = subjectFields.title;
       } else if (!subjectSnap.exists()) {
-        subjectData.title = subjectTitles[subject];
+        subjectData.title = subjectTitles[subject as keyof typeof subjectTitles];
       }
       await setDoc(subjectDocRef, subjectData);
 
       // Update or create section document
-      let sectionData = sectionSnap.exists()
+      let sectionData: any = sectionSnap.exists()
         ? sectionSnap.data()
-        : { title: sectionTitles[section], files: [] };
+        : { title: sectionTitles[section as keyof typeof sectionTitles], files: [] };
 
       // Always update the title
       if (sectionFields && sectionFields.title) {
@@ -328,7 +329,7 @@ export async function POST(req) {
             const sectionSnap = await getDoc(sectionRef);
             if (!sectionSnap.exists()) {
               await setDoc(sectionRef, {
-                title: sectionTitles[sectionKey],
+                title: sectionTitles[sectionKey as keyof typeof sectionTitles],
                 files: [],
               });
             }
@@ -338,7 +339,7 @@ export async function POST(req) {
         // Ensure subject document has the correct title and section documents
         const subjectSnap = await getDoc(subjectRef);
         if (!subjectSnap.exists()) {
-          await setDoc(subjectRef, { title: subjectTitles[subjectKey] });
+          await setDoc(subjectRef, { title: subjectTitles[subjectKey as keyof typeof subjectTitles] });
         }
 
         await Promise.all(sectionDocsPromises);
@@ -348,7 +349,7 @@ export async function POST(req) {
         { message: "Lesson Created and Documents Updated Successfully" },
         { status: 201 }
       );
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error:", err);
       return NextResponse.json(
         { message: "Error", error: err.message || "Internal Server Error" },
