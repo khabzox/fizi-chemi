@@ -7,6 +7,8 @@ import { ReactNode } from "react";
 
 export const metadata = SearchPage;
 
+export const dynamic = "force-dynamic";
+
 const SearchLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
   const tutorialData = await getTutorial()
   return (
