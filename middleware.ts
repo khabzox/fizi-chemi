@@ -16,11 +16,14 @@ const isPublicApi = createRouteMatcher([
   "/api/search(.*)",
 ]);
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req) || isPublicApi(req)) {
     return;
   }
-  auth().protect();
+  const { userId } = await auth();
+  if (!userId) {
+    return Response.redirect("/sign-in");
+  }
 });
 
 
@@ -30,3 +33,4 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+
