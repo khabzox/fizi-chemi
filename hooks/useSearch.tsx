@@ -3,10 +3,16 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const useSearch = () => {
+interface SearchResult {
+  id: string;
+  title: string;
+  downloadLink: string;
+}
+
+const useSearch = (): [SearchResult[], boolean, string] => {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

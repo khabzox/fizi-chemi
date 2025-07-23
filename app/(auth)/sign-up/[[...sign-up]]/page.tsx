@@ -101,7 +101,7 @@ export default function SignUpPage() {
   )
 }
 
-function GoogleIcon(props) {
+function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width={props.width || 31} height={props.height || 31} viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" className={props.className} {...props}>
       <path d="M30.6985 12.4643H29.45V12.4H15.5V18.6H24.2598C22.9818 22.2092 19.5478 24.8 15.5 24.8C10.3641 24.8 6.2 20.6359 6.2 15.5C6.2 10.3641 10.3641 6.2 15.5 6.2C17.8707 6.2 20.0275 7.09435 21.6698 8.55522L26.0539 4.17105C23.2856 1.59107 19.5827 0 15.5 0C6.94012 0 0 6.94012 0 15.5C0 24.0599 6.94012 31 15.5 31C24.0599 31 31 24.0599 31 15.5C31 14.4607 30.893 13.4462 30.6985 12.4643Z" fill="#FFC107" />
