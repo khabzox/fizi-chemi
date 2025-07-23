@@ -1,5 +1,5 @@
 // dynamic metadata
-export function generateMetadataByLevelId(levelId) {
+export function generateMetadataByLevelId(levelId: string) {
   const levelTitles = {
     "1ac": "1ère Année Collège",
     "2ac": "2ème Année Collège",
@@ -38,28 +38,28 @@ export function generateMetadataByLevelId(levelId) {
   };
 
   return {
-    title: levelTitles[levelId] || "Niveau Inconnu",
+    title: levelTitles[levelId as keyof typeof levelTitles] || "Niveau Inconnu",
     description:
-      levelDescriptions[levelId] ||
+      levelDescriptions[levelId as keyof typeof levelDescriptions] ||
       "Description non disponible pour ce niveau.",
     openGraph: {
-      title: levelTitles[levelId] || "Niveau Inconnu",
+      title: levelTitles[levelId as keyof typeof levelTitles] || "Niveau Inconnu",
       description:
-        levelDescriptions[levelId] ||
+        levelDescriptions[levelId as keyof typeof levelDescriptions] ||
         "Description non disponible pour ce niveau.",
       images: ["/path-to-your-image.jpg"], // Update the path as needed
       url: `https://www.fizichemi.com/tutorials/${levelId}`,
     },
     twitter: {
-      title: levelTitles[levelId] || "Niveau Inconnu",
+      title: levelTitles[levelId as keyof typeof levelTitles] || "Niveau Inconnu",
       description:
-        levelDescriptions[levelId] ||
+        levelDescriptions[levelId as keyof typeof levelDescriptions] ||
         "Description non disponible pour ce niveau.",
       image: "/path-to-your-image.jpg", // Update the path as needed
       card: "summary_large_image",
     },
     keywords:
-      levelKeywords[levelId] ||
+      levelKeywords[levelId as keyof typeof levelKeywords] ||
       "niveau, tutoriels, physique, chimie, FiziChemi",
   };
 }
